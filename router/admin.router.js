@@ -1,8 +1,9 @@
 import express from "express";
 import isAuthenticated from "../middleware/auth.js";
 import authorizeRole from "../middleware/userRoles.js";
-import { deletePostByAdmin, getAllPosts, getPostById, updatePost, updatePostByAdmin } from "../controller/blog.controller.js";
+import { deletePostByAdmin, getAllPosts, getPostById,  updatePostByAdmin } from "../controller/blog.controller.js";
 import { upload } from "../middleware/multer.js";
+import { deleteUser, getAllUsers, getUserById } from "../controller/user.controller.js";
 
 
 
@@ -30,6 +31,19 @@ router.put("/:id", isAuthenticated, upload.single("image"), updatePostByAdmin);
 
 // Delete post  by admin  any post 
 router.delete("/:id", isAuthenticated, deletePostByAdmin);
+
+
+//get all users by Admin
+router.get("/all/users", isAuthenticated , getAllUsers);
+
+
+// get a user by id (only by admin)
+router.get("/user/:id", isAuthenticated, getUserById);
+
+//Delete user by id (only by admin)
+router.delete("/user/:id", isAuthenticated, deleteUser);
+
+
 
 
 export default router;
