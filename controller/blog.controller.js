@@ -45,7 +45,7 @@ export const getPostById = async (req, res) => {
     }
 };
 
-// Update a post (only by owner)
+// Update a post (only by owner)  
 export const updatePost = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
@@ -53,9 +53,7 @@ export const updatePost = async (req, res) => {
 
         // Check if logged-in user is the owner
         if (post.userId.toString() !== req.user._id.toString()) {
-            // console.log(post.userId);
-            // console.log(req.user._id);
-            // console.log(req.user.id);
+           
             
             
             return res.status(403).json({ message: "Not authorized" });
@@ -80,6 +78,37 @@ export const updatePost = async (req, res) => {
     }
 };
 
+
+
+// update a post by admin (any post)
+export const updatePostByAdmin = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    // Admin can update any post, no ownership check
+
+    const { title, description } = req.body;
+    if (title) post.title = title;
+    if (description) post.description = description;
+
+    if (req.file) {
+      post.image = `uploads/${req.file.filename}`; // assuming multer saves in uploads
+    }
+
+    await post.save();
+    res.json({ success: true, post });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
+};
+
+
+
+
 // Delete a post (only by owner)
 export const deletePost = async (req, res) => {
   try {
@@ -97,3 +126,22 @@ export const deletePost = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
+
+
+// Delete a post by admin (any post)
+
+export const deletePostByAdmin = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    await post.deleteOne();
+    res.json({ success: true, message: "Post deleted successfully by admin" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+

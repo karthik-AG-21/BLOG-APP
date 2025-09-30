@@ -16,7 +16,7 @@ router.get("/all", getAllPosts);
 router.get("/:id", isAuthenticated, getPostById);
 
 
-//update  || put by id 
+//update  || put by id    68da67e48775260f2ad9602d
 router.put("/:id", isAuthenticated, upload.single("image"), updatePost);
 
 
