@@ -33,6 +33,8 @@ router.put("/:id", isAuthenticated, upload.single("image"), updatePostByAdmin);
 router.delete("/:id", isAuthenticated, deletePostByAdmin);
 
 
+// User management routes (only for admin)
+
 //get all users by Admin
 router.get("/all/users", isAuthenticated , getAllUsers);
 
