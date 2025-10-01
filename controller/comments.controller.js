@@ -1,102 +1,88 @@
-// controllers/commentController.js
-import Comment from "../models/comment.model.js";
+import { Post } from "../models/blog.model.js";
+import { Comment } from "../models/comment.model.js";
 
-// CREATE comment
+
+
+
+// ADD a comment to a post
 export const addComment = async (req, res) => {
-    try {
-        const { text } = req.body;
-        const targetUserId = req.params.userId; // user to whom comment is added
+  try {
+    const { text } = req.body;
+    const postId = req.params.id;
 
-        const comment = await Comment.create({
-            text,
-            author: req.user._id,    // logged-in user (from middleware)
-            targetUser: targetUserId
-        });
+    if (!text) return res.status(400).json({ success: false, error: "Text is required" });
 
-        res.json({
-            success: true,
-            comment
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            error: err.message
-        });
-    }
+    const comment = await Comment.create({
+      text,
+      author: req.user._id, // from isAuthenticated middleware
+      post: postId
+    });
+
+    // optional: push comment id into Post.comments array
+    await Post.findByIdAndUpdate(postId, { $push: { comments: comment._id } });
+
+    res.json({ success: true, data: comment });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 };
 
+// GET all comments for a post
+export const getCommentsForPost = async (req, res) => {
+  try {
+    const postId = req.params.id;
 
+    const comments = await Comment.find({ post: postId })
+      .populate("author", "username email")
+      .sort({ createdAt: -1 });
 
-
-// READ comments for a user
-export const getCommentsForUser = async (req, res) => {
-    try {
-        const comments = await Comment.find({ targetUser: req.params.userId })
-            .populate("author", "name email"); // show author details
-
-        res.json({
-            success: true,
-            comments
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            error: err.message
-        });
-    }
+    res.json({ success: true, data: comments });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 };
 
-// UPDATE comment (only author can edit)
+// UPDATE a comment (only by author)
 export const updateComment = async (req, res) => {
-    try {
-        const comment = await Comment.findOneAndUpdate(
-            { _id: req.params.id, author: req.user._id }, // only author
-            { text: req.body.text },
-            { new: true }
-        );
+  try {
+    const { text } = req.body;
+    const commentId = req.params.id;
 
-        if (!comment) return res.status(404).json({
-            success:
-                false,
-            error: "Not allowed or not found"
-        });
-        res.json({
-            success: true,
-            comment
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            error: err.message
-        });
+    let comment = await Comment.findById(commentId);
+    if (!comment) return res.status(404).json({ success: false, error: "Comment not found" });
+
+    if (comment.author.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, error: "Not authorized" });
     }
+
+    comment.text = text || comment.text;
+    await comment.save();
+
+    res.json({ success: true, data: comment });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 };
 
-// DELETE comment (author or admin)
-export const deleteComment = async (req, res) => {
-    try {
-        const comment = await Comment.findById(req.params.id);
-        if (!comment) return res.status(404).json({
-            success: false,
-            error: "Comment not found"
-        });
+// DELETE a comment (only by author or admin)
+ export const deleteComment = async (req, res) => {
+  try {
+    const commentId = req.params.id;
 
-        if (comment.author.toString() !== req.user._id.toString() && req.user.role !== "admin") {
-            return res.status(403).json({
-                success: false,
-                error: "Not authorized"
-            });
-        }
+    let comment = await Comment.findById(commentId);
+    if (!comment) return res.status(404).json({ success: false, error: "Comment not found" });
 
-        await comment.deleteOne();
-        res.json({
-            success: true,
-            message: "Comment deleted"
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            error: err.message
-        });
+    if (comment.author.toString() !== req.user._id.toString() && req.user.role !== "admin") {
+      return res.status(403).json({ success: false, error: "Not authorized" });
     }
+
+    await Comment.findByIdAndDelete(commentId);
+    await Post.findByIdAndUpdate(comment.post, { $pull: { comments: commentId } });
+
+    res.json({ success: true, message: "Comment deleted" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 };
+
+

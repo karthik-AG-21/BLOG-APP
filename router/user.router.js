@@ -2,7 +2,7 @@ import express from "express";
 
 import { login, register } from "../controller/user.controller.js";
 import isAuthenticated from "../middleware/auth.js";
-import { addComment, deleteComment, getCommentsForUser, updateComment } from "../controller/comments.controller.js";
+import { addComment, deleteComment, getCommentsForPost,  updateComment } from "../controller/comments.controller.js";
 
 const router = express.Router();
 
@@ -29,16 +29,16 @@ router.get("/home", isAuthenticated, (req, res) => {
 
 
 // logged-in users can comment
-router.post("/:userId/comments", isAuthenticated, addComment);
+router.post("/:id/comments", isAuthenticated, addComment);
 
-// get all comments on a user (can be public or protected)
-router.get("/:userId/comments", isAuthenticated, getCommentsForUser);
+// get all comments on a post (can be public or protected)
+router.get("/:id/comments", getCommentsForPost);
 
 // author can update
 router.put("/comments/:id", isAuthenticated, updateComment);
 
 // author or admin can delete
-router.delete("/comments/:id", isAuthenticated, deleteComment);
+router.delete("/comments/:id", isAuthenticated, deleteComment );
 
 
 
