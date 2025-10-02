@@ -3,13 +3,13 @@ import isAuthenticated from "../middleware/auth.js";
 import authorizeRole from "../middleware/userRoles.js";
 import { deletePostByAdmin, getAllPosts, getPostById,  updatePostByAdmin } from "../controller/blog.controller.js";
 import { upload } from "../middleware/multer.js";
-import { deleteUser, getAllUsers, getUserById } from "../controller/user.controller.js";
+import { deleteUser, getAllUsers, getUserById, login } from "../controller/user.controller.js";
 
 
 
 const router = express.Router();
 
-
+router.post("/login", login);
 
 // Admin dashboard
 router.get("/dashboard",  isAuthenticated,  authorizeRole(["admin"]),(req, res) => {

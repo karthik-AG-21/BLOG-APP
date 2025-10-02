@@ -5,6 +5,7 @@ import connectDB from './config/database.js'
 import userRouter from './router/user.router.js';
 import adminRoutes from './router/admin.router.js';
 import postRoutes from './router/blog.router.js';
+import otpRoutes from './router/otp.router.js';
 
 
 dotenv.config();
@@ -29,6 +30,9 @@ app.use("/api/admin", adminRoutes);
 
 
 app.use("/api/posts", postRoutes);
+
+
+app.use('/api/otp', otpRoutes);
 
 
 app.listen(process.env.PORT, () => {
