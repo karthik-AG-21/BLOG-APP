@@ -1,57 +1,49 @@
-import nodemailer from 'nodemailer';
+// controllers/otpController.js
 
-let otpStore = {}; // for demo, store OTP in memory
+import { generateOTP, hashOTP } from "../utils/otpUtils.js";
 
-const generateOTP = (length = 6) => {
-  let otp = '';
-  for (let i = 0; i < length; i++) otp += Math.floor(Math.random() * 10);
-  return otp;
-};
 
-const sendEmailOTP = async (email, otp) => {
-  const transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
-  });
+// In-memory store for OTPs: { userId: { otpHash, expiresAt } }
+const otpStore = {};
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: 'Your OTP Code',
-    text: `Your OTP is ${otp}. It expires in 5 minutes.`
-  });
-};
-
-export const sendOTP = async (req, res) => {
-  const { email } = req.body;
-  const otp = generateOTP();
-  otpStore[email] = { otp, expires: Date.now() + 5 * 60 * 1000 };
-
+export const sendOTP = async function (req, res) {
   try {
-    await sendEmailOTP(email, otp);
-    res.json({ success: true, message: 'OTP sent' });
+    const otp = generateOTP();
+    const hashedOtp = hashOTP(otp);
+
+    // Store in-memory with expiry (5 minutes)
+    otpStore[req.user._id] = {
+      otpHash: hashedOtp,
+      expiresAt: Date.now() + 5 * 60 * 1000,
+    };
+
+    // Send OTP to user (email/SMS)
+    console.log("Send this OTP to user:", otp); // replace with real send logic
+
+    res.json({ message: "OTP sent successfully" });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Error sending OTP' });
+    res.status(500).json({ error: "Failed to send OTP" });
   }
 };
 
-export const verifyOTP = (req, res) => {
-  const { email, otp } = req.body;
-  const record = otpStore[email];
+export const verifyOTP = async function (req, res) {
+  try {
+    const { otp } = req.body;
+    const record = otpStore[req.user._id];
 
-  if (!record) return res.status(400).json({ success: false, message: 'No OTP requested' });
-  if (Date.now() > record.expires) {
-    delete otpStore[email];
-    return res.status(400).json({ success: false, message: 'OTP expired' });
+    if (!record || record.expiresAt < Date.now()) {
+      return res.status(400).json({ error: "OTP expired or not found" });
+    }
+
+    const hashedOtp = hashOTP(otp);
+    if (hashedOtp !== record.otpHash) {
+      return res.status(400).json({ error: "Invalid OTP" });
+    }
+
+    // OTP valid → proceed (login, verify, etc.)
+    delete otpStore[req.user._id]; // remove used OTP
+    res.json({ message: "OTP verified successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to verify OTP" });
   }
-
-  if (record.otp === otp) {
-    delete otpStore[email];
-    return res.json({ success: true, message: 'OTP verified' });
-  }
-
-  return res.status(400).json({ success: false, message: 'Invalid OTP' });
 };
