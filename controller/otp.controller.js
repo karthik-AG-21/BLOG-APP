@@ -1,49 +1,54 @@
-// controllers/otpController.js
+// controllers/otp.controller.js
+import { generateOTP } from "../utils/otpUtils.js";
+import { sendMail } from "../utils/email.js";
+import { User } from "../models/user.model.js";
 
-import { generateOTP, hashOTP } from "../utils/otpUtils.js";
+// Temporary variable to store OTPs (for demo use only)
+let otpStore = {};
 
-
-// In-memory store for OTPs: { userId: { otpHash, expiresAt } }
-const otpStore = {};
-
-export const sendOTP = async function (req, res) {
+export const sendOTP = async (req, res) => {
   try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
     const otp = generateOTP();
-    const hashedOtp = hashOTP(otp);
+    otpStore[email] = otp; // Store OTP in memory (not DB)
 
-    // Store in-memory with expiry (5 minutes)
-    otpStore[req.user._id] = {
-      otpHash: hashedOtp,
-      expiresAt: Date.now() + 5 * 60 * 1000,
-    };
+    await sendMail({
+      to: email,
+      subject: "Your OTP Code",
+      text: `Your OTP is ${otp}`,
+      html: `<p>Your OTP is <b>${otp}</b></p>`,
+    });
 
-    // Send OTP to user (email/SMS)
-    console.log("Send this OTP to user:", otp); // replace with real send logic
+    console.log("Generated OTP:", otp);
 
-    res.json({ message: "OTP sent successfully" });
-  } catch (err) {
-    res.status(500).json({ error: "Failed to send OTP" });
+    res.json({ success: true, message: "OTP sent to your email" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Failed to send OTP" });
   }
 };
 
-export const verifyOTP = async function (req, res) {
+export const verifyOTP = async (req, res) => {
   try {
-    const { otp } = req.body;
-    const record = otpStore[req.user._id];
+    const { email, otp } = req.body;
 
-    if (!record || record.expiresAt < Date.now()) {
-      return res.status(400).json({ error: "OTP expired or not found" });
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    if (otpStore[email] && otpStore[email] === otp) {
+      await User.findOneAndUpdate({ email }, { isVerified: true });
+      delete otpStore[email]; // remove OTP from memory
+
+      return res.json({ success: true, message: "OTP verified successfully!" });
+    } else {
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
     }
-
-    const hashedOtp = hashOTP(otp);
-    if (hashedOtp !== record.otpHash) {
-      return res.status(400).json({ error: "Invalid OTP" });
-    }
-
-    // OTP valid → proceed (login, verify, etc.)
-    delete otpStore[req.user._id]; // remove used OTP
-    res.json({ message: "OTP verified successfully" });
-  } catch (err) {
-    res.status(500).json({ error: "Failed to verify OTP" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Verification failed" });
   }
 };
