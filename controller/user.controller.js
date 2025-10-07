@@ -69,12 +69,12 @@ export const login = async (req, res) => {
         }
 
 
-         if (!user.isVerified) {
-      return res.status(400).json({
-        success: false,
-        message: "Please verify your email via OTP before logging in.",
-      });
-    }
+        //      if (!user.isVerified) {
+        //   return res.status(400).json({
+        //     success: false,
+        //     message: "Please verify your email via OTP before logging in.",
+        //   });
+        // }
 
         // Generate JWT token
         const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
