@@ -1,26 +1,41 @@
+import { User } from "../models/user.model.js";
+import { EMAIL_VERIFY_TEMPLATE } from "../utils/emailTemplates.js";
+import transporter from "../utils/email.js";
 
-import {  hashOTP } from "../utils/otpUtils.js";
-import { sendEmail } from "../utils/email.js";
+export const sendVerifyOtp = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const user = await User.findById(userId);
 
+        if (!user) {
+            return res.status(400).json({ message: "User not found", success: false });
+        }
 
-// controllers/otp.controller.js
-import { generateOTP } from "../utils/otpUtils.js";
+        if (user.isAccountVerified) {
+            return res.status(400).json({ message: "Account already verified", success: false });
+        }
 
+        const otp = String(Math.floor(100000 + Math.random() * 900000)); // 6-digit OTP
 
-export const sendOtp = async (req, res) => {
-  try {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ message: "Email required" });
+        user.verifyOtp = otp;
+        user.verifyOtpExpiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
 
-    // Generate OTP
-    const otp = generateOTP(); // 6-digit OTP
+        await user.save();
 
-    // Send OTP via email
-    await sendEmail(email, "Your OTP Code", `Your OTP is ${otp}. It will expire in 5 minutes.`);
+        // Send OTP email
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: "Verify Your Account",
+            // text: `Your verification code is: ${otp}. Please verify your account using this OTP.`,
+            html:EMAIL_VERIFY_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", user.email)
+        };
 
-    res.status(200).json({ message: "OTP sent successfully" });
-  } catch (err) {
-    console.error("Error sending OTP:", err);
-    res.status(500).json({ message: "Error sending OTP" });
-  }
+        await transporter.sendMail(mailOptions);
+
+        return res.json({ message: "Verification code sent successfully", success: true });
+    } catch (error) {
+        return res.status(500).json({ message: error.message, success: false });
+    }
 };
+

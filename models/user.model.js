@@ -24,10 +24,12 @@ const userSchema = new mongoose.Schema({
     enum: ["admin", "user"],
     default: 'user'
   },
-    isVarified: {
-      type: Boolean,      // when user registers, by default it is false 0     
-      default: false      //  then if the user varifies email it becomes true 1                 
-    },                  
+  verifyOtp: {
+    type: String,
+    default: ""
+  },
+  verifyOtpExpiresAt: { type: Number, default: 0 },
+  isAccountVerified: { type: Boolean, default: false },
 }, {
   timestamps: true
 })
