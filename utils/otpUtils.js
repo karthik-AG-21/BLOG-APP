@@ -6,6 +6,3 @@ export const generateOTP = (length = 6) => {
 };
 
 // Hash the OTP using SHA-256 for security
-export const hashOTP = (otp) => {
-  return crypto.createHash("sha256").update(otp).digest("hex");
-};
