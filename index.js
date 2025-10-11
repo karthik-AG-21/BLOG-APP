@@ -6,6 +6,9 @@ import userRouter from './router/user.router.js';
 import adminRoutes from './router/admin.router.js';
 import postRoutes from './router/blog.router.js';
 import otpRoutes from './router/otp.router.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 
 
 dotenv.config();
@@ -14,12 +17,20 @@ const app = express();
 connectDB();
 
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.set("view engine", "ejs");
+
+app.set("views", path.join(__dirname, "/views"));
+
+
 
 
 
@@ -29,10 +40,16 @@ app.use("/api/user", userRouter);
 app.use("/api/admin", adminRoutes);
 
 
-app.use("/api/posts", postRoutes);
+app.use("/api/home/posts", postRoutes);
 
 
 app.use('/api/otp', otpRoutes);
+
+
+
+app.get("/", (req, res) => {
+  res.redirect("views/home", { title: "Home Page" });
+});
 
 
 app.listen(process.env.PORT, () => {

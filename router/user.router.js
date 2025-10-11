@@ -1,9 +1,9 @@
 import express from "express";
 
 import { login, register } from "../controller/user.controller.js";
-import isAuthenticated from "../middleware/auth.js";
 import { addComment, deleteComment, getCommentsForPost,  updateComment } from "../controller/comments.controller.js";
 import { countLikes, toggleLike } from "../controller/like.controller.js";
+import isAuthenticated from "../middleware/isAuthenticated.js";
 
 const router = express.Router();
 

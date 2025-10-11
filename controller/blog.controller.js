@@ -24,10 +24,10 @@ export const createPost = async (req, res) => {
 };
 
 // Get all posts
-export const getAllPosts = async (req, res) => {
+export const  getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.find().populate("userId", "email"); // optional: populate user info
-        res.json({ success: true, posts });
+        const posts = await Post.find().populate("userId", "email").lean(); // optional: populate user info
+        res.render("home", { posts });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }

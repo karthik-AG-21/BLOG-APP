@@ -1,5 +1,5 @@
 import express from "express";
-import isAuthenticated from "../middleware/auth.js";
+import isAuthenticated from "../middleware/isAuthenticated.js";
 import authorizeRole from "../middleware/userRoles.js";
 import { deletePostByAdmin, getAllPosts, getPostById,  updatePostByAdmin } from "../controller/blog.controller.js";
 import { upload } from "../middleware/multer.js";
