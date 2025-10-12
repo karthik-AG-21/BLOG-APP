@@ -1,24 +1,30 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 
-// Where to store uploaded files
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // folder where images will be saved
+    cb(null, "uploads"); // make sure this folder exists
   },
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, Date.now() + ext); // unique filename
+    if (!file) return cb(new Error("No file uploaded"));
+
+    const ext = path.extname(file.originalname); // keep original extension
+    const userId = req.user?._id; // logged-in user's ID
+    if (!userId) return cb(new Error("User ID not found"));
+
+    const filePath = path.join("uploads", `${userId}${ext}`);
+
+    // delete old image if exists
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+    cb(null, `${userId}${ext}`);
   },
 });
 
-// Filter to allow only images
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image/")) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only image files are allowed"), false);
-  }
+  if (file.mimetype.startsWith("image/")) cb(null, true);
+  else cb(new Error("Only image files are allowed"), false);
 };
 
 export const upload = multer({ storage, fileFilter });

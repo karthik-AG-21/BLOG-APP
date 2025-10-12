@@ -8,6 +8,7 @@ import postRoutes from './router/blog.router.js';
 import otpRoutes from './router/otp.router.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { Post } from './models/blog.model.js';
 
 
 
@@ -25,6 +26,7 @@ const __dirname = path.dirname(__filename);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.set("view engine", "ejs");
 
@@ -40,15 +42,21 @@ app.use("/api/user", userRouter);
 app.use("/api/admin", adminRoutes);
 
 
-app.use("/api/home/posts", postRoutes);
+app.use("/api/posts", postRoutes);
 
 
 app.use('/api/otp', otpRoutes);
 
 
 
-app.get("/", (req, res) => {
-  res.redirect("views/home", { title: "Home Page" });
+app.get("/", async (req, res) => {
+  try {
+    const posts = await Post.find().populate("userId", "email").lean();
+    res.render("pages/posts", { title: "Home Page", posts });
+  } catch (err) {
+    console.error(err);
+    res.render("pages/posts", { title: "Home Page", posts: [] });
+  }
 });
 
 

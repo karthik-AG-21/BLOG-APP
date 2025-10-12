@@ -26,8 +26,8 @@ export const createPost = async (req, res) => {
 // Get all posts
 export const  getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.find().populate("userId", "email").lean(); // optional: populate user info
-        res.render("home", { posts });
+        const posts = await Post.find().populate("userId", ["name", "email"]).lean(); // optional: populate user info
+        res.render("pages/posts", { posts });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
