@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlogShare - Register</title>
+    <title>Register - BlogShare</title>
     <style>
         * {
             margin: 0;
@@ -14,435 +13,408 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo span {
+            color: #ffd700;
+        }
+
+        main {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: moveBackground 20s linear infinite;
-            z-index: 0;
-        }
-
-        @keyframes moveBackground {
-            0% {
-                transform: translate(0, 0);
-            }
-
-            100% {
-                transform: translate(50px, 50px);
-            }
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background-image: radial-gradient(circle at 20% 50%, rgba(255, 107, 107, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(78, 205, 196, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(149, 225, 211, 0.15) 0%, transparent 50%);
-            animation: float 20s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-30px);
-            }
+            padding: 2rem;
         }
 
         .register-container {
-            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             width: 100%;
-            margin: 2rem;
-            position: relative;
-            z-index: 1;
-            animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 450px;
+            padding: 3rem;
+            animation: slideUp 0.6s ease;
         }
 
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(50px);
+                transform: translateY(30px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        .register-card {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: 3rem;
-            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .logo-section {
+        .register-header {
             text-align: center;
             margin-bottom: 2rem;
         }
 
-        .logo-icon {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
-            border-radius: 20px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
-            animation: pulse 2s ease-in-out infinite;
-            margin-bottom: 1rem;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        .logo-text {
+        .register-header h1 {
             font-size: 2rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-        }
-
-        .logo-subtitle {
-            color: #666;
-            font-size: 1rem;
-        }
-
-        .form-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .form-header h2 {
-            font-size: 1.8rem;
             color: #333;
             margin-bottom: 0.5rem;
         }
 
-        .form-header p {
+        .register-header p {
             color: #666;
             font-size: 0.95rem;
         }
 
         .alert {
             padding: 1rem;
-            border-radius: 12px;
+            border-radius: 10px;
             margin-bottom: 1.5rem;
-            font-size: 0.95rem;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            font-size: 0.9rem;
         }
 
         .alert-error {
-            background: rgba(255, 107, 107, 0.1);
-            border: 2px solid #FF6B6B;
-            color: #d32f2f;
+            background: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
         }
 
         .alert-success {
-            background: rgba(78, 205, 196, 0.1);
-            border: 2px solid #4ECDC4;
-            color: #0f3460;
+            background: #efe;
+            color: #3c3;
+            border: 1px solid #cfc;
         }
 
         .form-group {
-            margin-bottom: 1.3rem;
+            margin-bottom: 1.5rem;
         }
 
-        .form-group label {
+        label {
             display: block;
             margin-bottom: 0.5rem;
             color: #333;
-            font-weight: 600;
-            font-size: 0.95rem;
+            font-weight: 500;
+            font-size: 0.9rem;
         }
 
-        .form-group input {
+        input {
             width: 100%;
-            padding: 1rem 1.2rem;
+            padding: 0.9rem 1rem;
             border: 2px solid #e0e0e0;
-            border-radius: 12px;
+            border-radius: 10px;
             font-size: 1rem;
-            transition: all 0.3s;
-            background: white;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
         }
 
-        .form-group input:focus {
+        input:focus {
             outline: none;
-            border-color: #FF6B6B;
-            box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
-            transform: translateY(-2px);
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .form-group input::placeholder {
-            color: #aaa;
+        .password-group {
+            position: relative;
         }
 
-        .form-group input.error {
-            border-color: #FF6B6B;
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            font-size: 1.2rem;
+            user-select: none;
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
         }
 
-        .submit-btn {
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-group a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+
+        .register-btn {
             width: 100%;
-            padding: 1.1rem;
-            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 15px;
+            border-radius: 10px;
             font-size: 1.1rem;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 5px 25px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .submit-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
-        .submit-btn:hover::before {
-            width: 500px;
-            height: 500px;
+        .register-btn:active {
+            transform: translateY(0);
         }
 
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 40px rgba(255, 107, 107, 0.6);
-        }
-
-        .submit-btn:active {
-            transform: translateY(-1px);
-        }
-
-        .submit-btn:disabled {
+        .register-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
 
-        .form-footer {
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .social-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-link {
             text-align: center;
             margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e0e0e0;
             color: #666;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
-        .form-footer a {
-            color: #FF6B6B;
+        .login-link a {
+            color: #667eea;
             text-decoration: none;
             font-weight: 600;
-            transition: all 0.3s;
         }
 
-        .form-footer a:hover {
-            color: #4ECDC4;
+        .login-link a:hover {
             text-decoration: underline;
         }
 
-        .terms-text {
-            margin-top: 1rem;
-            font-size: 0.85rem;
-            color: #888;
-            text-align: center;
-            line-height: 1.5;
-        }
-
-        .terms-text a {
-            color: #FF6B6B;
-            text-decoration: none;
-        }
-
-        .terms-text a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .register-card {
+        @media (max-width: 480px) {
+            .register-container {
                 padding: 2rem 1.5rem;
             }
 
-            .form-row {
-                grid-template-columns: 1fr;
+            header {
+                padding: 1rem 1.5rem;
             }
 
-            .logo-text {
-                font-size: 1.5rem;
-            }
-
-            .form-header h2 {
+            .logo {
                 font-size: 1.5rem;
             }
         }
     </style>
 </head>
-
 <body>
-    <div class="register-container">
-        <div class="register-card">
-            <div class="logo-section">
-                <div class="logo-icon">✍️</div>
-                <div class="logo-text">BlogShare</div>
-                <p class="logo-subtitle">Share your stories, inspire the world</p>
-            </div>
+    <header>
+        <a href="/" class="logo">Blog<span>Share</span></a>
+    </header>
 
-            <div class="form-header">
-                <h2>Create Your Account</h2>
-                <p>Join our community of writers and readers</p>
+    <main>
+        <div class="register-container">
+            <div class="register-header">
+                <h1>Create Account</h1>
+                <p>Join BlogShare and start sharing your stories</p>
             </div>
 
             <% if (locals.error) { %>
-            <div class="alert alert-error">
-                <%= error %>
-            </div>
+                <div class="alert alert-error">
+                    <%= error %>
+                </div>
             <% } %>
 
             <% if (locals.success) { %>
-            <div class="alert alert-success">
-                <%= success %>
-            </div>
+                <div class="alert alert-success">
+                    <%= success %>
+                </div>
             <% } %>
 
             <form action="/register" method="POST" id="registerForm">
                 <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" name="name" placeholder="Enter your full name"
-                        value="<%= locals.name || '' %>" required>
+                    <label for="fullname">Full Name</label>
+                    <input 
+                        type="text" 
+                        id="fullname" 
+                        name="fullname" 
+                        placeholder="John Doe" 
+                        value="<%= locals.oldInput ? oldInput.fullname || '' : '' %>"
+                        required>
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email"
-                        value="<%= locals.email || '' %>" required>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="you@example.com" 
+                        value="<%= locals.oldInput ? oldInput.email || '' : '' %>"
+                        required>
                 </div>
 
                 <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number"
-                        value="<%= locals.phone || '' %>" required>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" placeholder="Create password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="confirmPassword">Confirm Password</label>
-                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password"
+                    <label for="password">Password</label>
+                    <div class="password-group">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Create a strong password" 
+                            minlength="8"
                             required>
+                        <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
                     </div>
                 </div>
 
-                <button type="submit" class="submit-btn">Register Now</button>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="password-group">
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            name="confirmPassword" 
+                            placeholder="Confirm your password" 
+                            minlength="8"
+                            required>
+                        <span class="toggle-password" onclick="togglePassword('confirmPassword')">👁️</span>
+                    </div>
+                </div>
 
-                <p class="terms-text">
-                    By registering, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy
-                        Policy</a>
-                </p>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the <a href="/terms">Terms & Conditions</a></label>
+                </div>
+
+                <button type="submit" class="register-btn">Create Account</button>
             </form>
 
-            <div class="form-footer">
-                Already have an account? <a href="/login">Login here</a>
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+
+            <div class="social-buttons">
+                <a href="/auth/google" class="social-btn">
+                    <span>🔍</span> Google
+                </a>
+                <a href="/auth/github" class="social-btn">
+                    <span>⚡</span> GitHub
+                </a>
+            </div>
+
+            <div class="login-link">
+                Already have an account? <a href="/login">Sign In</a>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        document.getElementById('registerForm').addEventListener('submit', function (e) {
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        // Client-side validation
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-
+            
             if (password !== confirmPassword) {
                 e.preventDefault();
                 alert('Passwords do not match!');
-                document.getElementById('confirmPassword').classList.add('error');
+                return false;
+            }
+            
+            if (password.length < 8) {
+                e.preventDefault();
+                alert('Password must be at least 8 characters long!');
                 return false;
             }
         });
-
-        // Add focus animations
-        const inputs = document.querySelectorAll('input');
-        inputs.forEach(input => {
-            input.addEventListener('focus', function () {
-                this.classList.remove('error');
-                this.parentElement.style.transform = 'translateY(-2px)';
-            });
-
-            input.addEventListener('blur', function () {
-                this.parentElement.style.transform = 'translateY(0)';
-            });
-        });
     </script>
 </body>
-
 </html>

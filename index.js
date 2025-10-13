@@ -60,6 +60,11 @@ app.get("/", async (req, res) => {
 });
 
 
+app.get('/register', (req, res) => {
+  res.render('pages/register'); // your views/pages/register.ejs file
+});
+
+
 app.listen(process.env.PORT, () => {
     console.log(`🚀 Server running at http://localhost:${process.env.PORT}`);
 

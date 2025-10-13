@@ -651,8 +651,8 @@
                                         </div>
                                         <div class="author-info">
                                             <h4>
-                                                <%= post.userId && post.userId.email ? post.userId.email : "Unknown User"
-                                                    %>
+                                                <%= post.userId && post.userId.email ? post.userId.email
+                                                    : "Unknown User" %>
                                             </h4>
 
                                             <span>
@@ -690,7 +690,11 @@
                             <p>Join our community to access full content, like posts, comment, and connect with other
                                 members!</p>
                             <div class="modal-buttons">
-                                <a href="pages/register.ejs" class="btn-modal btn-primary">Sign Up Now</a>
+                                <button type="button" class="btn-modal btn-primary"
+                                    onclick="window.location.href='/register'">
+                                    Sign Up Now
+                                </button>
+
                                 <button class="btn-modal btn-secondary" onclick="closeModal()">Maybe Later</button>
                             </div>
                         </div>
