@@ -31,18 +31,19 @@ export const register = async (req, res) => {
             email,
             phone,
             password: hashedPassword,
-        });
 
+        });
         return res.redirect("/login");
+
+
+
+
     } catch (err) {
         console.error("Something went wrong", err);
-        return res.status(500).json({
-            message: "Something went wrong while registering",
-            success: false,
-        });
+
+        return res.render("register", { error: "Something went wrong while registering. Please try again." });
     }
 };
-
 
 export const login = async (req, res) => {
     try {
@@ -91,19 +92,9 @@ export const login = async (req, res) => {
 
 
         if (user.role === 'admin') {
-            return res.status(200).json({
-                success: true,
-                message: "Admin login successful",
-                role: "admin",
-                token // send the JWT
-            });
+            return res.redirect('/admin/dashboard');
         } else {
-            return res.status(200).json({
-                success: true,
-                message: "User login successful",
-                role: "user",
-                token
-            });
+            return res.redirect('/'); // or /user/home or /
         }
 
     } catch (err) {

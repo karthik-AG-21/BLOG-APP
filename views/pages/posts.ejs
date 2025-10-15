@@ -33,6 +33,83 @@
             z-index: 0;
         }
 
+        nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ffffff 0%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s;
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(-2deg);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+
+
+
+
         @keyframes moveBackground {
             0% {
                 transform: translate(0, 0);
@@ -512,6 +589,104 @@
             justify-content: center;
         }
 
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* General button style */
+        .btn {
+            padding: 0.7rem 1.8rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Login button */
+        .btn-login {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-login:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+            box-shadow: 0 5px 25px rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        /* Register button */
+        .btn-register {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(245, 87, 108, 0.6);
+        }
+
         .btn-modal {
             padding: 1rem 2.5rem;
             border: none;
@@ -605,138 +780,118 @@
 
 <body>
     <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <div class="logo" onclick="showAuthPopup()"> BlogShare</div>
-            <div class="nav-links">
-                <a onclick="showAuthPopup()">Home</a>
-                <a onclick="showAuthPopup()">Explore</a>
-                <a onclick="showAuthPopup()">Trending</a>
-                <a onclick="showAuthPopup()">About</a>
-            </div>
-            <div class="auth-buttons">
-                <button class="btn btn-login" ">Login</button>
-                <button class=" btn btn-register" ">Sign Up</button>
-            </div>
-        </div>
-    </nav>
+    <%- include('../partials/header') %>
 
-    <!-- Hero Section -->
-    <div class=" container">
-                    <div class="hero">
-                        <h1>Welcome to BlogShare</h1>
-                        <p>Discover amazing content from our community</p>
-                    </div>
+        <!-- Hero Section -->
+        <div class=" container">
+            <div class="hero">
+                <h1>Welcome to BlogShare</h1>
+                <p>Discover amazing content from our community</p>
+            </div>
 
-                    <!-- Posts Grid -->
-                    <div class="posts-grid">
-                        <% posts.forEach(function(post) { %>
-                            <div class="post-card" onclick="showAuthPopup()">
-                                <div class="post-image">
-                                    <% if (post.image) { %>
-                                        <img src="/<%= post.image.replace(/\\/g, '/') %>" alt="<%= post.title %>"
-                                            style="width:100%; height:200px; object-fit:cover; border-radius:10px;" />
-                                        <% } else { %>
-                                            <div
-                                                style="width:100%; height:200px; background:linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:3rem;">
-                                                <%= post.title.charAt(0).toUpperCase() %>
-                                            </div>
-                                            <% } %>
+            <!-- Posts Grid -->
+            <div class="posts-grid">
+                <% posts.forEach(function(post) { %>
+                    <div class="post-card" onclick="showAuthPopup()">
+                        <div class="post-image">
+                            <% if (post.image) { %>
+                                <img src="/<%= post.image.replace(/\\/g, '/') %>" alt="<%= post.title %>"
+                                    style="width:100%; height:200px; object-fit:cover; border-radius:10px;" />
+                                <% } else { %>
+                                    <div
+                                        style="width:100%; height:200px; background:linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:3rem;">
+                                        <%= post.title.charAt(0).toUpperCase() %>
+                                    </div>
+                                    <% } %>
+                        </div>
+
+                        <div class="post-content">
+                            <div class="post-author">
+                                <div class="avatar">
+                                    <%= post.userId.email ? post.userId.email.charAt(0).toUpperCase() : "U" %>
+                                </div>
+                                <div class="author-info">
+                                    <h4>
+                                        <%= post.userId && post.userId.email ? post.userId.email : "Unknown User" %>
+                                    </h4>
+
+                                    <span>
+                                        <%= post.createdAt ? new Date(post.createdAt).toLocaleString("en-IN", {
+                                            dateStyle: "medium" , timeStyle: "short" }) : "Just now" %>
+                                    </span>
                                 </div>
 
-                                <div class="post-content">
-                                    <div class="post-author">
-                                        <div class="avatar">
-                                            <%= post.userId.email ? post.userId.email.charAt(0).toUpperCase() : "U" %>
-                                        </div>
-                                        <div class="author-info">
-                                            <h4>
-                                                <%= post.userId && post.userId.email ? post.userId.email
-                                                    : "Unknown User" %>
-                                            </h4>
-
-                                            <span>
-                                                <%= post.createdAt ? new Date(post.createdAt).toLocaleString("en-IN", {
-                                                    dateStyle: "medium" , timeStyle: "short" }) : "Just now" %>
-                                            </span>
-                                        </div>
-
-                                    </div>
-
-                                    <h3 class="post-title">
-                                        <%= post.title %>
-                                    </h3>
-                                    <p class="post-excerpt">
-                                        <%= post.description %>
-                                    </p>
-
-                                    <div class="post-footer">
-                                        <div class="post-stats">
-                                            <span>❤️ <%= post.likes || 0 %></span>
-                                            <span>💬 <%= post.comments || 0 %></span>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
-                            <% }); %>
-                    </div>
 
+                            <h3 class="post-title">
+                                <%= post.title %>
+                            </h3>
+                            <p class="post-excerpt">
+                                <%= post.description %>
+                            </p>
 
-                    <!-- Auth Popup Modal -->
-                    <div class="modal" id="authModal">
-                        <div class="modal-content">
-                            <div class="modal-icon">🔒</div>
-                            <h2>Register to View More</h2>
-                            <p>Join our community to access full content, like posts, comment, and connect with other
-                                members!</p>
-                            <div class="modal-buttons">
-                                <button type="button" class="btn-modal btn-primary"
-                                    onclick="window.location.href='/register'">
-                                    Sign Up Now
-                                </button>
-
-                                <button class="btn-modal btn-secondary" onclick="closeModal()">Maybe Later</button>
+                            <div class="post-footer">
+                                <div class="post-stats">
+                                    <span>❤️ <%= post.likes || 0 %></span>
+                                    <span>💬 <%= post.comments || 0 %></span>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <% }); %>
+            </div>
 
-                    <!-- Footer -->
-                    <footer>
-                        <p>&copy; 2025 PostHub. All rights reserved. | <a href="#"
-                                onclick="showAuthPopup(); return false;">Privacy Policy</a> | <a href="#"
-                                onclick="showAuthPopup(); return false;">Terms of Service</a></p>
-                    </footer>
 
-                    <script>
-                        function showAuthPopup() {
-                            const modal = document.getElementById('authModal');
-                            modal.classList.add('active');
+            <!-- Auth Popup Modal -->
+            <div class="modal" id="authModal">
+                <div class="modal-content">
+                    <div class="modal-icon">🔒</div>
+                    <h2>Register to View More</h2>
+                    <p>Join our community to access full content, like posts, comment, and connect with other
+                        members!</p>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-modal btn-primary" onclick="window.location.href='/register'">
+                            Sign Up Now
+                        </button>
+
+                        <button class="btn-modal btn-secondary" onclick="closeModal()">Maybe Later</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <%- include('../partials/footer') %>
+
+                <script>
+                    function showAuthPopup() {
+                        const modal = document.getElementById('authModal');
+                        modal.classList.add('active');
+                    }
+
+                    function closeModal() {
+                        const modal = document.getElementById('authModal');
+                        modal.classList.remove('active');
+                    }
+
+                    // Close modal when clicking outside
+                    window.onclick = function (event) {
+                        const modal = document.getElementById('authModal');
+                        if (event.target === modal) {
+                            closeModal();
                         }
+                    }
 
-                        function closeModal() {
-                            const modal = document.getElementById('authModal');
-                            modal.classList.remove('active');
-                        }
-
-                        // Close modal when clicking outside
-                        window.onclick = function (event) {
-                            const modal = document.getElementById('authModal');
-                            if (event.target === modal) {
-                                closeModal();
-                            }
-                        }
-
-                        // Show popup on any link click
-                        document.addEventListener('DOMContentLoaded', function () {
-                            const links = document.querySelectorAll('a:not([onclick])');
-                            links.forEach(link => {
-                                link.addEventListener('click', function (e) {
-                                    e.preventDefault();
-                                    showAuthPopup();
-                                });
+                    // Show popup on any link click
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const links = document.querySelectorAll('a:not([onclick])');
+                        links.forEach(link => {
+                            link.addEventListener('click', function (e) {
+                                e.preventDefault();
+                                showAuthPopup();
                             });
                         });
-                    </script>
+                    });
+                </script>
 </body>
 
 </html>

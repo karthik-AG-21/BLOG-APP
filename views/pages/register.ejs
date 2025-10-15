@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,6 +26,161 @@
             padding: 1.5rem 2rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
+        nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+
+
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ffffff 0%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s;
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(-2deg);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* General button style */
+        .btn {
+            padding: 0.7rem 1.8rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Login button */
+        .btn-login {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-login:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+            box-shadow: 0 5px 25px rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        /* Register button */
+        .btn-register {
+
+            display: none;
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            text-align: center;
+            color: white;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        footer a {
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        footer a:hover {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+
 
         .logo {
             font-size: 2rem;
@@ -66,6 +222,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -290,131 +447,119 @@
         }
     </style>
 </head>
+
 <body>
-    <header>
-        <a href="/" class="logo">Blog<span>Share</span></a>
-    </header>
+    <%- include('../partials/header') %>
 
-    <main>
-        <div class="register-container">
-            <div class="register-header">
-                <h1>Create Account</h1>
-                <p>Join BlogShare and start sharing your stories</p>
-            </div>
-
-            <% if (locals.error) { %>
-                <div class="alert alert-error">
-                    <%= error %>
-                </div>
-            <% } %>
-
-            <% if (locals.success) { %>
-                <div class="alert alert-success">
-                    <%= success %>
-                </div>
-            <% } %>
-
-            <form action="/register" method="POST" id="registerForm">
-                <div class="form-group">
-                    <label for="fullname">Full Name</label>
-                    <input 
-                        type="text" 
-                        id="fullname" 
-                        name="fullname" 
-                        placeholder="John Doe" 
-                        value="<%= locals.oldInput ? oldInput.fullname || '' : '' %>"
-                        required>
+        <main>
+            <div class="register-container">
+                <div class="register-header">
+                    <h1>Create Account</h1>
+                    <p>Join BlogShare and start sharing your stories</p>
                 </div>
 
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        placeholder="you@example.com" 
-                        value="<%= locals.oldInput ? oldInput.email || '' : '' %>"
-                        required>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="password-group">
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            placeholder="Create a strong password" 
-                            minlength="8"
-                            required>
-                        <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+                <% if (locals.error) { %>
+                    <div class="alert alert-error">
+                        <%= error %>
                     </div>
-                </div>
+                    <% } %>
 
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password</label>
-                    <div class="password-group">
-                        <input 
-                            type="password" 
-                            id="confirmPassword" 
-                            name="confirmPassword" 
-                            placeholder="Confirm your password" 
-                            minlength="8"
-                            required>
-                        <span class="toggle-password" onclick="togglePassword('confirmPassword')">👁️</span>
-                    </div>
-                </div>
+                        <% if (locals.success) { %>
+                            <div class="alert alert-success">
+                                <%= success %>
+                            </div>
+                            <% } %>
 
-                <div class="checkbox-group">
-                    <input type="checkbox" id="terms" name="terms" required>
-                    <label for="terms">I agree to the <a href="/terms">Terms & Conditions</a></label>
-                </div>
+                                <form action="/api/user/register" method="POST" id="registerForm">
+                                    <div class="form-group">
+                                        <label for="name">Full Name</label>
+                                        <input type="text" id="name" name="name" placeholder="John Doe" required>
+                                    </div>
 
-                <button type="submit" class="register-btn">Create Account</button>
-            </form>
+                                    <div class="form-group">
+                                        <label for="email">Email Address</label>
+                                        <input type="email" id="email" name="email" placeholder="you@example.com"
+                                            required>
+                                    </div>
 
-            <div class="divider">
-                <span>or continue with</span>
+                                    <div class="form-group">
+                                        <label for="phone">Phone Number</label>
+                                        <input type="text" id="phone" name="phone" placeholder="9876543210" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <div class="password-group">
+                                            <input type="password" id="password" name="password" placeholder="Password"
+                                                minlength="8" required>
+                                            <span class="toggle-password"
+                                                onclick="togglePassword('password')">👁️</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="confirmPassword">Confirm Password</label>
+                                        <div class="password-group">
+                                            <input type="password" id="confirmPassword"
+                                                placeholder="Confirm your password" minlength="8" required>
+                                            <span class="toggle-password"
+                                                onclick="togglePassword('confirmPassword')">👁️</span>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="register-btn">Create Account</button>
+                                </form>
+
+                                <div class="divider">
+                                    <span>or continue with</span>
+                                </div>
+
+                                <div class="social-buttons">
+                                    <a href="/auth/google" class="social-btn">
+                                        <span>🔍</span> Google
+                                    </a>
+                                    <a href="/auth/github" class="social-btn">
+                                        <span>⚡</span> GitHub
+                                    </a>
+                                </div>
+
+                                <div class="login-link">
+                                    Already have an account? <a href="/login">Sign In</a>
+
+                                </div>
             </div>
+        </main>
 
-            <div class="social-buttons">
-                <a href="/auth/google" class="social-btn">
-                    <span>🔍</span> Google
-                </a>
-                <a href="/auth/github" class="social-btn">
-                    <span>⚡</span> GitHub
-                </a>
-            </div>
+        <%- include('../partials/footer') %>
 
-            <div class="login-link">
-                Already have an account? <a href="/login">Sign In</a>
-            </div>
-        </div>
-    </main>
+        <script>
 
-    <script>
-        function togglePassword(inputId) {
-            const input = document.getElementById(inputId);
-            input.type = input.type === 'password' ? 'text' : 'password';
-        }
 
-        // Client-side validation
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (password !== confirmPassword) {
-                e.preventDefault();
-                alert('Passwords do not match!');
-                return false;
+
+
+            function togglePassword(inputId) {
+                const input = document.getElementById(inputId);
+                input.type = input.type === 'password' ? 'text' : 'password';
             }
-            
-            if (password.length < 8) {
-                e.preventDefault();
-                alert('Password must be at least 8 characters long!');
-                return false;
-            }
-        });
-    </script>
+
+            // Client-side validation
+            document.getElementById('registerForm').addEventListener('submit', function (e) {
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    alert('Passwords do not match!');
+                    return false;
+                }
+
+                if (password.length < 8) {
+                    e.preventDefault();
+                    alert('Password must be at least 8 characters long!');
+                    return false;
+                }
+            });
+        </script>
 </body>
+
 </html>

@@ -9,6 +9,7 @@ import otpRoutes from './router/otp.router.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Post } from './models/blog.model.js';
+// import cors from "cors";
 
 
 
@@ -27,6 +28,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// app.use(cors());
 
 app.set("view engine", "ejs");
 
@@ -61,7 +63,12 @@ app.get("/", async (req, res) => {
 
 
 app.get('/register', (req, res) => {
-  res.render('pages/register'); // your views/pages/register.ejs file
+  res.render('pages/register'); 
+   user: req.session.user || null // your views/pages/register.ejs file
+});
+
+app.get("/login", (req, res) => {
+    res.render("pages/login"); 
 });
 
 
