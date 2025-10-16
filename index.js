@@ -9,7 +9,8 @@ import otpRoutes from './router/otp.router.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Post } from './models/blog.model.js';
-// import cors from "cors";
+import flash from 'connect-flash';
+
 
 
 
@@ -23,7 +24,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-
+app.use(flash());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -37,9 +38,9 @@ app.set("views", path.join(__dirname, "/views"));
 
 
 
-
-
 app.use("/api/user", userRouter);
+
+
 
 app.use("/api/admin", adminRoutes);
 
@@ -63,12 +64,12 @@ app.get("/", async (req, res) => {
 
 
 app.get('/register', (req, res) => {
-  res.render('pages/register'); 
-   user: req.session.user || null // your views/pages/register.ejs file
+  res.render('pages/register',{error: null, success: null, redirect: false} ); 
+  //  user: req.session.user || null // your views/pages/register.ejs file
 });
 
 app.get("/login", (req, res) => {
-    res.render("pages/login"); 
+    res.render("pages/login",{error: null, success: null, redirect: false}); 
 });
 
 

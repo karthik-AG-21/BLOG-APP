@@ -1,5 +1,6 @@
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs"
+import { error } from "console";
 import jwt from "jsonwebtoken";
 
 
@@ -18,9 +19,9 @@ export const register = async (req, res) => {
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({
-                message: "User already exists with this email.",
-                success: false,
+            return res.render("pages/register", {
+                error: "User already exists with this email.",
+                success: null
             });
         }
 
@@ -33,15 +34,19 @@ export const register = async (req, res) => {
             password: hashedPassword,
 
         });
-        return res.redirect("/login");
 
-
+        return res.render('pages/register', { error: null,
+            success: 'Registration successful! Redirecting to login...',
+            redirect: true,
+        });
 
 
     } catch (err) {
         console.error("Something went wrong", err);
 
-        return res.render("register", { error: "Something went wrong while registering. Please try again." });
+        return res.render("pages/register", { error: "Something went wrong while registering. Please try again.",
+            success: null
+         });
     }
 };
 

@@ -457,109 +457,128 @@
                     <h1>Create Account</h1>
                     <p>Join BlogShare and start sharing your stories</p>
                 </div>
+                <div>
 
-                <% if (locals.error) { %>
-                    <div class="alert alert-error">
-                        <%= error %>
-                    </div>
-                    <% } %>
 
-                        <% if (locals.success) { %>
-                            <div class="alert alert-success">
-                                <%= success %>
-                            </div>
-                            <% } %>
+                    <% if (error) { %>
+                        <div class="alert alert-danger">
+                            <%= error %>
+                        </div>
+                        <% } %>
 
-                                <form action="/api/user/register" method="POST" id="registerForm">
-                                    <div class="form-group">
-                                        <label for="name">Full Name</label>
-                                        <input type="text" id="name" name="name" placeholder="John Doe" required>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label for="email">Email Address</label>
-                                        <input type="email" id="email" name="email" placeholder="you@example.com"
-                                            required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="phone">Phone Number</label>
-                                        <input type="text" id="phone" name="phone" placeholder="9876543210" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="password">Password</label>
-                                        <div class="password-group">
-                                            <input type="password" id="password" name="password" placeholder="Password"
-                                                minlength="8" required>
-                                            <span class="toggle-password"
-                                                onclick="togglePassword('password')">👁️</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="confirmPassword">Confirm Password</label>
-                                        <div class="password-group">
-                                            <input type="password" id="confirmPassword"
-                                                placeholder="Confirm your password" minlength="8" required>
-                                            <span class="toggle-password"
-                                                onclick="togglePassword('confirmPassword')">👁️</span>
-                                        </div>
-                                    </div>
-
-                                    <button type="submit" class="register-btn">Create Account</button>
-                                </form>
-
-                                <div class="divider">
-                                    <span>or continue with</span>
+                            <% if (success) { %>
+                                <div class="alert alert-success">
+                                    <%= success %>
                                 </div>
+                                <% } %>
 
-                                <div class="social-buttons">
-                                    <a href="/auth/google" class="social-btn">
-                                        <span>🔍</span> Google
-                                    </a>
-                                    <a href="/auth/github" class="social-btn">
-                                        <span>⚡</span> GitHub
-                                    </a>
-                                </div>
 
-                                <div class="login-link">
-                                    Already have an account? <a href="/login">Sign In</a>
+                                    <% if (redirect) { %>
+                                        <script>
+                                            // Redirect to login after 10 seconds
+                                            setTimeout(() => {
+                                                window.location.href = "/login";
+                                            }, 5000); // 5 seconds
+                                        </script>
+                                        <% } %>
+                                            
 
-                                </div>
-            </div>
+
+
+                                                <form action="/api/user/register" method="POST" id="registerForm">
+                                                    <div class="form-group">
+                                                        <label for="name">Full Name</label>
+                                                        <input type="text" id="name" name="name" placeholder="John Doe"
+                                                            required>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="email">Email Address</label>
+                                                        <input type="email" id="email" name="email"
+                                                            placeholder="you@example.com" required>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="phone">Phone Number</label>
+                                                        <input type="text" id="phone" name="phone"
+                                                            placeholder="9876543210" required>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="password">Password</label>
+                                                        <div class="password-group">
+                                                            <input type="password" id="password" name="password"
+                                                                placeholder="Password" minlength="8" required>
+                                                            <span class="toggle-password"
+                                                                onclick="togglePassword('password')">👁️</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="confirmPassword">Confirm Password</label>
+                                                        <div class="password-group">
+                                                            <input type="password" id="confirmPassword"
+                                                                placeholder="Confirm your password" minlength="8"
+                                                                required>
+                                                            <span class="toggle-password"
+                                                                onclick="togglePassword('confirmPassword')">👁️</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <button type="submit" class="register-btn">Create Account</button>
+                                                </form>
+
+                                                <div class="divider">
+                                                    <span>or continue with</span>
+                                                </div>
+
+                                                <div class="social-buttons">
+                                                    <a href="/auth/google" class="social-btn">
+                                                        <span>🔍</span> Google
+                                                    </a>
+                                                    <a href="/auth/github" class="social-btn">
+                                                        <span>⚡</span> GitHub
+                                                    </a>
+                                                </div>
+
+                                                <div class="login-link">
+                                                    Already have an account? <a href="/login">Sign In</a>
+
+                                                </div>
+                </div>
         </main>
 
         <%- include('../partials/footer') %>
 
-        <script>
+            <script>
 
 
 
 
-            function togglePassword(inputId) {
-                const input = document.getElementById(inputId);
-                input.type = input.type === 'password' ? 'text' : 'password';
-            }
-
-            // Client-side validation
-            document.getElementById('registerForm').addEventListener('submit', function (e) {
-                const password = document.getElementById('password').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-
-                if (password !== confirmPassword) {
-                    e.preventDefault();
-                    alert('Passwords do not match!');
-                    return false;
+                function togglePassword(inputId) {
+                    const input = document.getElementById(inputId);
+                    input.type = input.type === 'password' ? 'text' : 'password';
                 }
 
-                if (password.length < 8) {
-                    e.preventDefault();
-                    alert('Password must be at least 8 characters long!');
-                    return false;
-                }
-            });
-        </script>
+                // Client-side validation
+                document.getElementById('registerForm').addEventListener('submit', function (e) {
+                    const password = document.getElementById('password').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+
+                    if (password !== confirmPassword) {
+                        e.preventDefault();
+                        alert('Passwords do not match!');
+                        return false;
+                    }
+
+                    if (password.length < 8) {
+                        e.preventDefault();
+                        alert('Password must be at least 8 characters long!');
+                        return false;
+                    }
+                });
+            </script>
 </body>
 
 </html>
