@@ -14,7 +14,7 @@ export const addComment = async (req, res) => {
 
     const comment = await Comment.create({
       text,
-      author: req.user._id, // from isAuthenticated middleware
+      userId: req.user._id, // from isAuthenticated middleware
       post: postId
     });
 
@@ -33,7 +33,7 @@ export const getCommentsForPost = async (req, res) => {
     const postId = req.params.id;
 
     const comments = await Comment.find({ post: postId })
-      .populate("author", "username email")
+      .populate("userId", "username email")
       .sort({ createdAt: -1 });
 
     res.json({ success: true, data: comments });
@@ -51,7 +51,7 @@ export const updateComment = async (req, res) => {
     let comment = await Comment.findById(commentId);
     if (!comment) return res.status(404).json({ success: false, error: "Comment not found" });
 
-    if (comment.author.toString() !== req.user._id.toString()) {
+    if (comment.userId.toString() !== req.user._id.toString()) {
       return res.status(403).json({ success: false, error: "Not authorized" });
     }
 
@@ -72,7 +72,7 @@ export const updateComment = async (req, res) => {
     let comment = await Comment.findById(commentId);
     if (!comment) return res.status(404).json({ success: false, error: "Comment not found" });
 
-    if (comment.author.toString() !== req.user._id.toString() && req.user.role !== "admin") {
+    if (comment.userId.toString() !== req.user._id.toString() && req.user.role !== "admin") {
       return res.status(403).json({ success: false, error: "Not authorized" });
     }
 

@@ -10,6 +10,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { Post } from './models/blog.model.js';
 import flash from 'connect-flash';
+import { TokenUser } from "./middleware/tokenEjs.js";
 
 
 
@@ -23,7 +24,7 @@ connectDB();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
+app.use(TokenUser);
 app.use(flash());
 app.use(cookieParser());
 app.use(express.json());
@@ -54,7 +55,7 @@ app.use('/api/otp', otpRoutes);
 
 app.get("/", async (req, res) => {
   try {
-    const posts = await Post.find().populate("userId", "email").lean();
+    const posts = await Post.find().populate("userId", "email name").lean();
     res.render("pages/posts", { title: "Home Page", posts });
   } catch (err) {
     console.error(err);
@@ -71,6 +72,7 @@ app.get('/register', (req, res) => {
 app.get("/login", (req, res) => {
     res.render("pages/login",{error: null, success: null, redirect: false}); 
 });
+
 
 
 app.listen(process.env.PORT, () => {

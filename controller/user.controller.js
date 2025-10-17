@@ -35,7 +35,8 @@ export const register = async (req, res) => {
 
         });
 
-        return res.render('pages/register', { error: null,
+        return res.render('pages/register', {
+            error: null,
             success: 'Registration successful! Redirecting to login...',
             redirect: true,
         });
@@ -44,9 +45,10 @@ export const register = async (req, res) => {
     } catch (err) {
         console.error("Something went wrong", err);
 
-        return res.render("pages/register", { error: "Something went wrong while registering. Please try again.",
+        return res.render("pages/register", {
+            error: "Something went wrong while registering. Please try again.",
             success: null
-         });
+        });
     }
 };
 
@@ -95,12 +97,12 @@ export const login = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000, // 1 day
         });
 
-
-        if (user.role === 'admin') {
-            return res.redirect('/admin/dashboard');
-        } else {
-            return res.redirect('/'); // or /user/home or /
-        }
+        const redirectUrl = user.role === 'admin' ? '/admin/dashboard' : '/';
+        res.render('pages/login', {
+            error: null,
+            success: 'Login successful! Redirecting...',
+            redirectUrl
+        });
 
     } catch (err) {
         console.log("Something went wrong", err);

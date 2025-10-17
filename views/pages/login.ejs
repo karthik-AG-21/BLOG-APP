@@ -225,6 +225,7 @@
             color: white;
             border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
+
         footer a {
             color: white;
             font-weight: 600;
@@ -240,46 +241,55 @@
 <body>
     <%- include('../partials/header') %>
 
-    <main>
-        <div class="login-container">
-            <div class="login-header">
-                <h1>Welcome Back</h1>
-                <p>Log in to continue sharing your stories</p>
-            </div>
-
-            <% if (locals.error) { %>
-            <div class="alert alert-error">
-                <%= error %>
-            </div>
-            <% } %>
-
-            <% if (locals.success) { %>
-            <div class="alert alert-success">
-                <%= success %>
-            </div>
-            <% } %>
-
-            <form action="/api/user/login" method="POST">
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        <main>
+            <div class="login-container">
+                <div class="login-header">
+                    <h1>Welcome Back</h1>
+                    <p>Log in to continue sharing your stories</p>
                 </div>
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                </div>
+                <% if (error) { %>
+                    <div class="alert alert-error">
+                        <%= error %>
+                    </div>
+                    <% } %>
 
-                <button type="submit" class="login-btn"   href="/"> Login</button>
-            </form>
+                        <% if (success) { %>
+                            <div class="alert alert-success">
+                                <%= success %>
+                            </div>
+                            <script>
+                                // Redirect after 3 seconds
+                                setTimeout(() => {
+                                    window.location.href = "<%= redirectUrl %>";
+                                }, 3000);
+                            </script>
+                            <% } %>
 
-            <div class="login-link">
-                Don’t have an account? <a onclick="window.location.href='/register'">Sign Up</a>
+
+                                <form action="/api/user/login" method="POST">
+                                    <div class="form-group">
+                                        <label for="email">Email Address</label>
+                                        <input type="email" id="email" name="email" placeholder="you@example.com"
+                                            required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input type="password" id="password" name="password"
+                                            placeholder="Enter your password" required>
+                                    </div>
+
+                                    <button type="submit" class="login-btn" href="/"> Login</button>
+                                </form>
+
+                                <div class="login-link">
+                                    Don’t have an account? <a onclick="window.location.href='/register'">Sign Up</a>
+                                </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-    <%- include('../partials/footer') %>
+        <%- include('../partials/footer') %>
 </body>
 
 </html>
