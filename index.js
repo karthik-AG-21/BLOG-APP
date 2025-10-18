@@ -73,6 +73,15 @@ app.get("/login", (req, res) => {
     res.render("pages/login",{error: null, success: null, redirect: false}); 
 });
 
+app.get("/otpVarify", async (req, res) => {
+    try {
+    const posts = await Post.find().populate("userId", "email name").lean();
+    res.render("pages/otpVarify", { title: "Home Page", posts });
+  } catch (err) {
+    console.error(err);
+    res.render("pages/otpVarify", { title: "Home Page", posts: [] });
+  }
+});
 
 
 app.listen(process.env.PORT, () => {

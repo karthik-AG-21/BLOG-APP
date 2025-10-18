@@ -97,7 +97,7 @@ export const login = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000, // 1 day
         });
 
-        const redirectUrl = user.role === 'admin' ? '/admin/dashboard' : '/';
+        const redirectUrl = user.role === 'admin' ? '/admin/dashboard' : '/otpVarify';
         res.render('pages/login', {
             error: null,
             success: 'Login successful! Redirecting...',
