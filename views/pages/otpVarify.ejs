@@ -193,6 +193,7 @@
         }
 
         @keyframes float {
+
             0%,
             100% {
                 transform: translateY(0px);
@@ -242,6 +243,7 @@
         }
 
         @keyframes glow {
+
             0%,
             100% {
                 filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
@@ -471,6 +473,7 @@
         }
 
         @keyframes bounce {
+
             0%,
             100% {
                 transform: translateY(0);
@@ -576,6 +579,31 @@
             box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
         }
 
+        .otp-fields {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .otp-field {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .otp-field:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.4);
+            transform: scale(1.05);
+        }
+
         .resend-otp {
             margin-top: 2rem;
             padding-top: 1.5rem;
@@ -601,6 +629,16 @@
 
         .btn-link:hover {
             color: #764ba2;
+        }
+
+        .otp-sent-message {
+            color: #28a745;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         footer {
@@ -646,13 +684,13 @@
         <div class="nav-container">
             <div class="logo">BlogShare</div>
             <div class="nav-links">
-                <a href="#" onclick="showOtpModal(event)">Home</a>
-                <a href="#" onclick="showOtpModal(event)">Explore</a>
-                <a href="#" onclick="showOtpModal(event)">About</a>
+                <a href="#" onclick="showVerificationModal(event)">Home</a>
+                <a href="#" onclick="showVerificationModal(event)">Explore</a>
+                <a href="#" onclick="showVerificationModal(event)">About</a>
             </div>
             <div class="auth-buttons">
-                <button class="btn btn-login" onclick="showOtpModal()">Login</button>
-                <button class="btn btn-register" onclick="showOtpModal()">Register</button>
+                <button class="btn btn-login" onclick="showVerificationModal()">Login</button>
+                <button class="btn btn-register" onclick="showVerificationModal()">Register</button>
             </div>
         </div>
     </nav>
@@ -665,138 +703,194 @@
         </div>
 
         <!-- Posts Grid -->
-         <div class="posts-grid">
-               
-                <% posts.forEach(function(post) { %>
+        <div class="posts-grid">
 
-                    <div class="post-card" onclick="showOtpModal()">
-                        <div class="post-image">
-                            <% if (post.image) { %>
-                                <img src="/<%= post.image.replace(/\\/g, '/') %>" alt="<%= post.title %>"
-                                    style="width:100%; height:200px; object-fit:cover; border-radius:10px;" />
-                                <% } else { %>
-                                    <div
-                                        style="width:100%; height:200px; background:linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:3rem;">
-                                        <%= post.title.charAt(0).toUpperCase() %>
-                                    </div>
-                                    <% } %>
-                        </div>
+            <% posts.forEach(function(post) { %>
 
-                        <div class="post-content">
-                            <div class="post-author">
-
-                                <div class="avatar">
-                                   
-                                    <%= post.userId && post.userId.name ? post.userId.name.charAt(0).toUpperCase() : "U" %>
-
+                <div class="post-card" onclick="showVerificationModal(event)">
+                    <div class="post-image">
+                        <% if (post.image) { %>
+                            <img src="/<%= post.image.replace(/\\/g, '/') %>" alt="<%= post.title %>"
+                                style="width:100%; height:200px; object-fit:cover; border-radius:10px;" />
+                            <% } else { %>
+                                <div
+                                    style="width:100%; height:200px; background:linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:3rem;">
+                                    <%= post.title.charAt(0).toUpperCase() %>
                                 </div>
-                                <div class="author-info">
-                                    <h4>
-                                        <%= post.userId && post.userId.name ? post.userId.name : "Unknown User" %>
-                                    </h4>
+                                <% } %>
+                    </div>
 
-                                    <span>
-                                        <%= post.createdAt ? new Date(post.createdAt).toLocaleString("en-IN", {
-                                            dateStyle: "medium" , timeStyle: "short" }) : "Just now" %>
-                                    </span>
-                                </div>
+                    <div class="post-content">
+                        <div class="post-author">
+
+                            <div class="avatar">
+
+                                <%= post.userId && post.userId.name ? post.userId.name.charAt(0).toUpperCase() : "U" %>
 
                             </div>
+                            <div class="author-info">
+                                <h4>
+                                    <%= post.userId && post.userId.name ? post.userId.name : "Unknown User" %>
+                                </h4>
 
-                            <h3 class="post-title">
-                                <%= post.title %>
-                            </h3>
-                            <p class="post-excerpt">
-                                <%= post.description %>
-                            </p>
+                                <span>
+                                    <%= post.createdAt ? new Date(post.createdAt).toLocaleString("en-IN", {
+                                        dateStyle: "medium" , timeStyle: "short" }) : "Just now" %>
+                                </span>
+                            </div>
 
-                            <div class="post-footer">
-                                <div class="post-stats">
-                                    <span>❤️ <%= post.likes || 0 %></span>
-                                    <span>💬 <%= post.comments || 0 %></span>
-                                </div>
+                        </div>
+
+                        <h3 class="post-title">
+                            <%= post.title %>
+                        </h3>
+                        <p class="post-excerpt">
+                            <%= post.description %>
+                        </p>
+
+                        <div class="post-footer">
+                            <div class="post-stats">
+                                <span>❤️ <%= post.likes || 0 %></span>
+                                <span>💬 <%= post.comments || 0 %></span>
                             </div>
                         </div>
                     </div>
-                    <% }); %>
-            </div>
-  
-            <!-- Post Loop End - Repeat for each post in array -->
-        </div>
-
-        <!-- OTP Verification Modal (Only Modal) -->
-        <div class="modal" id="verifyOtpModal">
-            <div class="modal-content">
-                <div class="modal-icon">📩</div>
-                <h2>Verify Your Account</h2>
-                <p>We've sent a One-Time Password (OTP) to your registered email or phone. Please enter it below to verify your account.</p>
-
-                <form id="otpForm" onsubmit="verifyOtp(event)">
-                    <input type="text" id="otpInput" class="otp-input" placeholder="Enter 6-digit OTP" maxlength="6" required />
-
-                    <div class="modal-buttons">
-                        <button type="submit" class="btn-modal btn-primary">Verify OTP</button>
-                        <button type="button" class="btn-modal btn-secondary" onclick="closeModal()">Later</button>
-                    </div>
-                </form>
-
-                <div class="resend-otp">
-                    <p>Didn't receive the code?</p>
-                    <button type="button" class="btn-link" onclick="resendOtp()">Resend OTP</button>
                 </div>
+                <% }); %>
+        </div>
+    </div>
+
+    <!-- Initial Verification Modal -->
+    <div class="modal" id="verificationModal">
+        <div class="modal-content">
+            <div class="modal-icon">🔒</div>
+            <h2>Verify Your Account</h2>
+            <p>Please verify your account to continue and access all features.</p>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-primary" onclick="proceedToOtp()">Verify Account</button>
+                <button type="button" class="btn-modal btn-secondary"
+                    onclick="closeModal('verificationModal')">Later</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- OTP Input Modal -->
+    <div class="modal" id="otpModal">
+        <div class="modal-content">
+            <div class="modal-icon">📩</div>
+            <h2>Enter OTP</h2>
+            <p>We've sent a One-Time Password to your email/phone</p>
+
+            <div id="otpSentMessage" class="otp-sent-message" style="display: none;">
+                ✓ OTP Sent Successfully!
+            </div>
+
+            <form id="otpForm" onsubmit="verifyOtp(event)">
+                <div class="otp-fields">
+                    <input type="text" class="otp-field" maxlength="1" inputmode="numeric" onkeyup="moveToNext(this)"
+                        required />
+                    <input type="text" class="otp-field" maxlength="1" inputmode="numeric" onkeyup="moveToNext(this)"
+                        required />
+                    <input type="text" class="otp-field" maxlength="1" inputmode="numeric" onkeyup="moveToNext(this)"
+                        required />
+                    <input type="text" class="otp-field" maxlength="1" inputmode="numeric" onkeyup="moveToNext(this)"
+                        required />
+                    <input type="text" class="otp-field" maxlength="1" inputmode="numeric" onkeyup="moveToNext(this)"
+                        required />
+                    <input type="text" class="otp-field" maxlength="1" inputmode="numeric" onkeyup="moveToNext(this)"
+                        required />
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-modal btn-primary">Submit OTP</button>
+                    <button type="button" class="btn-modal btn-secondary"
+                        onclick="closeModal('otpModal')">Cancel</button>
+                </div>
+            </form>
+
+            <div class="resend-otp">
+                <p>Didn't receive the code?</p>
+                <button type="button" class="btn-link" onclick="resendOtp()">Resend OTP</button>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2025 BlogShare. All rights reserved. | <a href="#" onclick="showOtpModal(event)">Privacy Policy</a></p>
+        <p>&copy; 2025 BlogShare. All rights reserved. | <a href="#" onclick="showVerificationModal(event)">Privacy
+                Policy</a></p>
     </footer>
 
     <script>
-        function showOtpModal(event) {
+        function showVerificationModal(event) {
             if (event) {
                 event.preventDefault();
             }
-            const modal = document.getElementById('verifyOtpModal');
+            const modal = document.getElementById('verificationModal');
             modal.classList.add('active');
         }
 
-        function closeModal() {
-            const modal = document.getElementById('verifyOtpModal');
+        function proceedToOtp() {
+            // Close verification modal
+            closeModal('verificationModal');
+            // Show OTP sent message
+            document.getElementById('otpSentMessage').style.display = 'flex';
+            // Open OTP modal
+            const modal = document.getElementById('otpModal');
+            modal.classList.add('active');
+            // Clear any previous OTP values
+            document.querySelectorAll('.otp-field').forEach(field => field.value = '');
+            // Focus on first field
+            document.querySelector('.otp-field').focus();
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
             modal.classList.remove('active');
+        }
+
+        function moveToNext(input) {
+            if (input.value.length > 0 && input.value[0].match(/[0-9]/)) {
+                const fields = document.querySelectorAll('.otp-field');
+                const nextField = Array.from(fields).find(f => !f.value);
+                if (nextField) {
+                    nextField.focus();
+                }
+            }
         }
 
         function verifyOtp(event) {
             event.preventDefault();
-            const otp = document.getElementById('otpInput').value;
-            alert('OTP Verified: ' + otp);
-            closeModal();
-            document.getElementById('otpForm').reset();
+            const fields = document.querySelectorAll('.otp-field');
+            const otp = Array.from(fields).map(f => f.value).join('');
+
+            if (otp.length === 6) {
+                alert('OTP Verified Successfully: ' + otp);
+                closeModal('otpModal');
+                document.getElementById('otpForm').reset();
+                document.getElementById('otpSentMessage').style.display = 'none';
+            }
         }
 
         function resendOtp() {
             alert('OTP resent to your email/phone!');
+            document.getElementById('otpSentMessage').style.display = 'flex';
+            document.querySelectorAll('.otp-field').forEach(field => field.value = '');
+            document.querySelector('.otp-field').focus();
         }
 
         // Close modal when clicking outside
         window.onclick = function (event) {
-            const modal = document.getElementById('verifyOtpModal');
-            if (event.target === modal) {
-                closeModal();
+            const verificationModal = document.getElementById('verificationModal');
+            const otpModal = document.getElementById('otpModal');
+
+            if (event.target === verificationModal) {
+                closeModal('verificationModal');
+            }
+            if (event.target === otpModal) {
+                closeModal('otpModal');
             }
         }
-
-        // Show popup on any link click
-        document.addEventListener('DOMContentLoaded', function () {
-            const links = document.querySelectorAll('a:not([onclick])');
-            links.forEach(link => {
-                link.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    showOtpModal();
-                });
-            });
-        });
     </script>
 </body>
 
