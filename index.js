@@ -65,27 +65,41 @@ app.get("/", async (req, res) => {
 
 
 app.get('/register', (req, res) => {
-  res.render('pages/register',{error: null, success: null, redirect: false} ); 
+  res.render('pages/register', { error: null, success: null, redirect: false });
   //  user: req.session.user || null // your views/pages/register.ejs file
 });
 
 app.get("/login", (req, res) => {
-    res.render("pages/login",{error: null, success: null, redirect: false}); 
+  res.render("pages/login", { error: null, success: null, redirect: false });
 });
 
 app.get("/otpVarify", async (req, res) => {
-    try {
+  try {
     const posts = await Post.find().populate("userId", "email name").lean();
-    res.render("pages/otpVarify", { title: "Home Page", posts });
+
+    // Get logged-in user
+    const user = req.user;
+
+    console.log("user in", user);
+
+    res.render("pages/otpVarify", {
+      title: "OTP Verify",
+      posts,
+      user
+    });
   } catch (err) {
     console.error(err);
-    res.render("pages/otpVarify", { title: "Home Page", posts: [] });
+    res.render("pages/otpVarify", {
+      title: "OTP Verify",
+      posts: [],
+      user: null
+    });
   }
 });
 
 
 app.listen(process.env.PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${process.env.PORT}`);
+  console.log(`🚀 Server running at http://localhost:${process.env.PORT}`);
 
 });
 
