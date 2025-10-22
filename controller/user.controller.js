@@ -57,22 +57,27 @@ export const login = async (req, res) => {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            return res.status(400).json({
+           return res.render('pages/register', {
                 success: false,
-                message: "Email and password are required"
+                error: "email and password are required fields"
             });
         }
 
         let user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(400).json({ success: false, message: "Incorrect email or password" });
-
+            return res.render('pages/login', {
+                success: false,
+                error: "User does not exist. Please register and continue."
+            });
         }
 
         const isPasswordMatched = await bcrypt.compare(password, user.password);
         if (!isPasswordMatched) {
-            return res.status(400).json({ success: false, message: "Incorrect email or password" });
+            return res.render('pages/login', {
+                success: false,
+                error: "Wrong email or password."
+            });
 
         }
 

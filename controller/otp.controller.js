@@ -2,6 +2,7 @@ import { User } from "../models/user.model.js";
 import { EMAIL_VERIFY_TEMPLATE } from "../utils/emailTemplates.js";
 import transporter from "../utils/email.js";
 import crypto from "crypto";
+import { Post } from "../models/blog.model.js";
 
 
 const hashOTP = (otp) => {
@@ -58,9 +59,19 @@ export const sendVerifyOtp = async (req, res) => {
 
     await transporter.sendMail(mailOptions);
 
-    return res.json({ message: "Verification code sent successfully", success: true });
+
+       const posts = await Post.find().populate('userId').sort({ createdAt: -1 });
+
+    // Render EJS with OTP modal active and posts
+    return res.render('pages/otpVarify', {
+      user,
+      posts,
+      showOtpModal: true, // flag to auto-open OTP modal
+      success: "Verification code sent successfully.",
+      error: null
+    });
   } catch (error) {
-    return res.status(500).json({ message: error.message, success: false });
+    return res.status(500).json({ error: error.message, success: false });
   }
 };
 

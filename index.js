@@ -77,10 +77,10 @@ app.get("/otpVarify", async  (req, res) => {
     try {
     const posts = await Post.find().populate("userId", "email name").lean();
     const user = req.user || null;
-    res.render("pages/otpVarify", { title: "Home Page", posts, user });
+    res.render("pages/otpVarify", { title: "Home Page", posts, user, showOtpModal: true });
   } catch (err) {
     console.error(err);
-    res.render("pages/otpVarify", { title: "Home Page", posts: [], user: null });
+    res.render("pages/otpVarify", { title: "Home Page", posts: [], user: null, showOtpModal: false });
   }
   });
 

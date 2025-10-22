@@ -280,14 +280,32 @@
                                             placeholder="Enter your password" required>
                                     </div>
 
-                                    <button type="submit" class="login-btn" onclick="window.location.href='/otpVarify'"> Login</button>
+                                    <button type="submit" class="login-btn">Login</button>
                                 </form>
+                                <p id="error-message" style="color: red;"></p>
 
                                 <div class="login-link">
                                     Don’t have an account? <a onclick="window.location.href='/register'">Sign Up</a>
                                 </div>
             </div>
         </main>
+        <script>
+            function validateLoginForm(event) {
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value.trim();
+                const error = document.getElementById('error-message');
+
+                error.textContent = "";
+
+                if (!email || !password) {
+                    error.textContent = "Please fill in both email and password.";
+                    event.preventDefault(); // stop form submit
+                    return false;
+                }
+
+                return true; // allow submit if filled
+            }
+        </script>
 
         <%- include('../partials/footer') %>
 </body>
