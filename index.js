@@ -73,30 +73,16 @@ app.get("/login", (req, res) => {
   res.render("pages/login", { error: null, success: null, redirect: false });
 });
 
-app.get("/otpVarify", async (req, res) => {
-  try {
+app.get("/otpVarify", async  (req, res) => {
+    try {
     const posts = await Post.find().populate("userId", "email name").lean();
-
-    // Get logged-in user
-    const user = req.user;
-
-    console.log("user in", user);
-
-    res.render("pages/otpVarify", {
-      title: "OTP Verify",
-      posts,
-      user
-    });
+    const user = req.user || null;
+    res.render("pages/otpVarify", { title: "Home Page", posts, user });
   } catch (err) {
     console.error(err);
-    res.render("pages/otpVarify", {
-      title: "OTP Verify",
-      posts: [],
-      user: null
-    });
+    res.render("pages/otpVarify", { title: "Home Page", posts: [], user: null });
   }
-});
-
+  });
 
 app.listen(process.env.PORT, () => {
   console.log(`🚀 Server running at http://localhost:${process.env.PORT}`);
