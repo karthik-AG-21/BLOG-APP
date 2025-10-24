@@ -13,9 +13,9 @@ const hashOTP = (otp) => {
 export const sendVerifyOtp = async (req, res) => {
   try {
     const userId = req.user._id;
-    console.log(req.user);
+    // console.log(req.user);
     const user = await User.findById(userId);
-    console.log("user",user)
+    // console.log("user",user)
 
     if (!user) {
       return res.render('pages/otpVarify', {
@@ -60,13 +60,15 @@ export const sendVerifyOtp = async (req, res) => {
     await transporter.sendMail(mailOptions);
 
 
-       const posts = await Post.find().populate('userId').sort({ createdAt: -1 });
+    const posts = await Post.find().populate('userId').sort({ createdAt: -1 });
 
     // Render EJS with OTP modal active and posts
     return res.render('pages/otpVarify', {
-      user,
       posts,
-      showOtpModal: true, // flag to auto-open OTP modal
+      user,
+      showVerificationModal: false, // hide first modal
+      showOtpModal: true,           // show otp modal
+      otpSentMessage: true,
       success: "Verification code sent successfully.",
       error: null
     });

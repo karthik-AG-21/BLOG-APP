@@ -73,16 +73,46 @@ app.get("/login", (req, res) => {
   res.render("pages/login", { error: null, success: null, redirect: false });
 });
 
-app.get("/otpVarify", async  (req, res) => {
-    try {
+app.get("/otpVarify", async (req, res) => {
+  try {
     const posts = await Post.find().populate("userId", "email name").lean();
     const user = req.user || null;
-    res.render("pages/otpVarify", { title: "Home Page", posts, user, showOtpModal: true });
+
+    let showVerificationModal = false;
+    let showOtpModal = false;
+
+    if (user && !user.isAccountVerified) {
+      // User not verified at all
+      showVerificationModal = true;
+    } else if (user && user.isAccountVerified && !user.isVerified) {
+      // OTP sent but not verified yet
+      showOtpModal = true;
+    }
+
+    res.render("pages/otpVarify", {
+      title: "Home Page",
+      posts,
+      user,
+      showVerificationModal,
+      showOtpModal,
+      otpSentMessage: false,
+      success: false
+    });
+
   } catch (err) {
     console.error(err);
-    res.render("pages/otpVarify", { title: "Home Page", posts: [], user: null, showOtpModal: false });
+    res.render("pages/otpVarify", {
+      title: "Home Page",
+      posts: [],
+      user: null,
+      showVerificationModal: false,
+      showOtpModal: false,
+      otpSentMessage: false,
+      success: false
+    });
   }
-  });
+});
+
 
 app.listen(process.env.PORT, () => {
   console.log(`🚀 Server running at http://localhost:${process.env.PORT}`);

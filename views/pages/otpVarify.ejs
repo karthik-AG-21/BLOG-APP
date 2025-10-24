@@ -759,14 +759,46 @@
                 <% }); %>
         </div>
     </div>
-   <% if (showOtpModal) { %>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('otpModal').classList.add('active');
-        document.getElementById('otpSentMessage').style.display = 'flex';
-    });
-</script>
-<% } %>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const verifyModal = document.getElementById('verificationModal');
+            const otpModal = document.getElementById('otpModal');
+            const verifyForm = document.getElementById('verifyForm'); // <- form id
+
+  // Server-driven automatic opening:
+  <% if (showVerificationModal) { %>
+    if (verifyModal) verifyModal.classList.add('active');
+  <% } %>
+  <% if (showOtpModal) { %>
+    if (otpModal) otpModal.classList.add('active');
+                // optional: focus first OTP input
+                setTimeout(() => {
+                    const first = document.querySelector('.otp-field');
+                    if (first) first.focus();
+                }, 50);
+  <% } %>
+
+  // When user submits verification form: close verify modal and show wait UI
+  if (verifyForm) {
+                verifyForm.addEventListener('submit', () => {
+                    if (verifyModal) verifyModal.classList.remove('active');
+                    // show a small waiting message (optional)
+                    let wait = document.getElementById('otp-wait');
+                    if (!wait) {
+                        wait = document.createElement('div');
+                        wait.id = 'otp-wait';
+                        wait.style = 'position:fixed;top:20px;right:20px;background:#fff;padding:10px;border-radius:6px;z-index:2000;';
+                        wait.innerText = 'Sending OTP...';
+                        document.body.appendChild(wait);
+                    } else {
+                        wait.style.display = 'block';
+                    }
+                    // **do not open otpModal here** — server will render otpModal after POST
+                });
+            }
+        });
+    </script>
 
 
 
@@ -779,7 +811,7 @@
             <div class="modal-buttons">
                 <form action="/api/otp/send-otp" method="POST">
                     <input type="hidden" name="userId" value="<%= user ? user._id : '' %>">
-                    <button type="submit" class="btn-modal btn-primary">Verify Account</button>
+                    <button type="submit" id="verify_account" class="btn-modal btn-primary">VerifyAccount</button>
                 </form>
                 <button type="button" class="btn-modal btn-secondary"
                     onclick="closeModal('verificationModal')">Later</button>
@@ -817,7 +849,7 @@
 
             <div class="resend-otp">
                 <p>Didn't receive the code?</p>
-                <button type="button" class="btn-link" onclick="resendOtp()">Resend OTP</button>
+                <button type="button" class=" btn-link" onclick="resendOtp()">Resend OTP</button>
             </div>
         </div>
     </div>
@@ -833,13 +865,13 @@
 
 
 
-            function showVerificationModal(event) {
-                if (event) {
-                    event.preventDefault();
-                }
-                const modal = document.getElementById('verificationModal');
-                modal.classList.add('active');
+        function showVerificationModal(event) {
+            if (event) {
+                event.preventDefault();
             }
+            const modal = document.getElementById('verificationModal');
+            modal.classList.add('active');
+        }
 
         function proceedToOtp() {
             // Close verification modal
