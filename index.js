@@ -11,6 +11,7 @@ import { fileURLToPath } from 'url';
 import { Post } from './models/blog.model.js';
 import flash from 'connect-flash';
 import { TokenUser } from "./middleware/tokenEjs.js";
+import { error } from 'console';
 
 
 
@@ -96,20 +97,35 @@ app.get("/otpVarify", async (req, res) => {
       showVerificationModal,
       showOtpModal,
       otpSentMessage: false,
-      success: false
+      error: null,
+      success: null,
     });
 
   } catch (err) {
+    const posts = await Post.find().populate("userId", "email name").lean();
     console.error(err);
     res.render("pages/otpVarify", {
       title: "Home Page",
-      posts: [],
+      posts,
       user: null,
       showVerificationModal: false,
       showOtpModal: false,
       otpSentMessage: false,
+      error: err.message || "something went wrong",
       success: false
     });
+  }
+});
+
+app.get("/userHome", async (req, res) => {
+  try {
+    const posts = await Post.find();
+    res.render("pages/userHome", {
+      title: "User Home",
+      posts
+    });
+  } catch (err) {
+    res.render("pages/error", { message: "Failed to load user home" });
   }
 });
 

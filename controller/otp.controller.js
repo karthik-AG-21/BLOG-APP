@@ -3,6 +3,7 @@ import { EMAIL_VERIFY_TEMPLATE } from "../utils/emailTemplates.js";
 import transporter from "../utils/email.js";
 import crypto from "crypto";
 import { Post } from "../models/blog.model.js";
+import { error } from "console";
 
 
 const hashOTP = (otp) => {
@@ -85,28 +86,41 @@ export const sendVerifyOtp = async (req, res) => {
 
 export const verifyOtp = async (req, res) => {
   try {
-    const userId = req.user._id;
-    const { otp } = req.body;
+    // const userId = req.user._id;
+    // const { otp } = req.body;
 
-    if (!otp) return res.status(400).json({ message: "OTP is required", success: false });
+    const userId = req.user._id;
+    const otpArray = req.body.otp;        // ['1','2','3','4','5','6']
+    const otp = otpArray.join('');  
+
+    if (!otp) {
+      return res.render('pages/otpVarify', { error: "OTP is required", success: false });
+    }
 
     const user = await User.findById(userId);
-    if (!user) return res.status(400).json({ message: "User not found", success: false });
+    if (!user) {
+      return res.render('pages/otpVarify', { error: "User not found", success: false });
+    }
 
-    if (user.verifyOtpExpiresAt < Date.now())
-      return res.status(400).json({ message: "OTP has expired", success: false });
+
+     if (user.verifyOtpExpiresAt < Date.now()) {
+      return res.render('pages/otpVarify', { error: "OTP has expired", success: false });
+    }
+
 
     const hashedOtp = hashOTP(otp);
-    if (user.verifyOtp !== hashedOtp)
-      return res.status(400).json({ message: "Invalid OTP", success: false });
+    if (user.verifyOtp !== hashedOtp) {
+      return res.render('pages/otpVarify', { error: "Invalid OTP", success: false });
+    }
 
     user.isAccountVerified = true;
     user.verifyOtp = undefined;
     user.verifyOtpExpiresAt = undefined;
     await user.save();
+   res.redirect("/pages/userHome.ejs"); 
 
-    res.json({ message: "Account verified successfully", success: true });
+    return res.render('pages/otpVarify', {success: "Account verified successfully",  error: null});
   } catch (error) {
-    res.status(500).json({ message: error.message, success: false });
+    return res.render('pages/otpVarify', { error: error.message, success: false });
   }
 };
