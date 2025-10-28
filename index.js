@@ -99,34 +99,29 @@ app.get("/otpVarify", async (req, res) => {
       otpSentMessage: false,
       error: null,
       success: null,
+      
     });
 
   } catch (err) {
-    const posts = await Post.find().populate("userId", "email name").lean();
+    // const posts = await Post.find().populate("userId", "email name").lean();
     console.error(err);
     res.render("pages/otpVarify", {
       title: "Home Page",
-      posts,
+      posts: [],
       user: null,
       showVerificationModal: false,
       showOtpModal: false,
       otpSentMessage: false,
       error: err.message || "something went wrong",
-      success: false
+      success: false,
+      
     });
   }
 });
 
 app.get("/userHome", async (req, res) => {
-  try {
-    const posts = await Post.find();
-    res.render("pages/userHome", {
-      title: "User Home",
-      posts
-    });
-  } catch (err) {
-    res.render("pages/error", { message: "Failed to load user home" });
-  }
+  const posts = await Post.find().populate("userId", "name email").lean();
+  res.render("pages/userHome", { title: "User Home" , posts,  error: null, success: null });
 });
 
 

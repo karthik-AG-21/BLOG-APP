@@ -109,6 +109,8 @@ export const verifyOtp = async (req, res) => {
 
 
     const hashedOtp = hashOTP(otp);
+    const posts = await Post.find().populate('userId').sort({ createdAt: -1 });
+
     if (user.verifyOtp !== hashedOtp) {
       return res.render('pages/otpVarify', { error: "Invalid OTP", success: false });
     }
@@ -117,9 +119,16 @@ export const verifyOtp = async (req, res) => {
     user.verifyOtp = undefined;
     user.verifyOtpExpiresAt = undefined;
     await user.save();
-   res.redirect("/pages/userHome.ejs"); 
 
-    return res.render('pages/otpVarify', {success: "Account verified successfully",  error: null});
+    if (user.isAccountVerified) {
+  return res.redirect("/userHome");
+}
+   
+
+   
+    return res.render('pages/otpVarify', {success: "Account verified successfully",  
+      error: null, posts ,  showVerificationModal: false,  showOtpModal: false
+});
   } catch (error) {
     return res.render('pages/otpVarify', { error: error.message, success: false });
   }
