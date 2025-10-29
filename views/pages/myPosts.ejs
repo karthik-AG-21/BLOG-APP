@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Posts - BlogShare</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
+            z-index: 0;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ffffff 0%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s;
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(-2deg);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.8rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4);
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.6);
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #f093fb 0%, #667eea 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(240, 147, 251, 0.4);
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.6);
+        }
+
+        .btn-cancel {
+            background: #e9ecef;
+            color: #333;
+            border: none;
+        }
+
+        .btn-cancel:hover {
+            background: #dee2e6;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+        }
+
+        @keyframes moveBackground {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(50px, 50px);
+            }
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image:
+                radial-gradient(circle, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+            background-size: 200px 200px, 150px 150px;
+            background-position: 0 0, 50px 50px;
+            animation: float 15s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+            background: linear-gradient(135deg, #ffffff 0%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .post-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            z-index: 1;
+        }
+
+        .post-card:hover::before {
+            left: 100%;
+        }
+
+        .post-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(118, 75, 162, 0.3);
+        }
+
+        .post-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-image::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        .post-content {
+            padding: 1.5rem;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .post-excerpt {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(102, 126, 234, 0.1);
+            margin-top: auto;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 1.5rem;
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        .post-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .no-posts {
+            text-align: center;
+            color: white;
+            padding: 4rem 2rem;
+            font-size: 1.3rem;
+        }
+
+        .no-posts p {
+            margin-bottom: 2rem;
+        }
+
+        .delete-confirm {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .delete-confirm.active {
+            display: flex;
+        }
+
+        .confirm-dialog {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 400px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .confirm-dialog h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .confirm-dialog p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .confirm-actions button {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .confirm-cancel {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .confirm-cancel:hover {
+            background: #dee2e6;
+        }
+
+        .confirm-delete {
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+            color: white;
+        }
+
+        .confirm-delete:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Create Post Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 25px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .close-btn:hover {
+            background: white;
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input[type="file"] {
+            display: none;
+        }
+
+        .file-upload {
+            position: relative;
+            border: 2px dashed #667eea;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .file-upload:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: #764ba2;
+        }
+
+        .file-upload.active {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
+        }
+
+        .file-upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload-text {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .file-upload-hint {
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .image-preview {
+            margin-top: 2rem;
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
+            border: 2px solid #667eea;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .image-preview.active {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .preview-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .image-preview img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            border: 3px solid white;
+            transition: transform 0.3s;
+        }
+
+        .image-preview img:hover {
+            transform: scale(1.05);
+        }
+
+        .preview-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            font-size: 1.2rem;
+        }
+
+        .image-preview-info {
+            margin-top: 1.5rem;
+        }
+
+        .image-preview-name {
+            color: #333;
+            font-size: 1rem;
+            font-weight: 600;
+            word-break: break-all;
+            padding: 0.8rem 1rem;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-remove-image {
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-remove-image:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.3);
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            border-top: 2px solid #e9ecef;
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            text-align: center;
+            color: white;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        footer a {
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        .fade-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 9999;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeOut 4s ease-in-out forwards;
+        }
+
+        .alert-success {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        @keyframes fadeOut {
+            0%, 80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .modal-content {
+                max-width: 95vw;
+            }
+
+            .modal-header h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="/home" class="logo">BlogShare</a>
+            <div class="nav-links">
+               <a onclick="window.location.href='/userHome'">Home</a>
+                <a onclick="window.location.href='/myPosts'">My Posts</a>
+                <a href="#">About</a>
+            </div>
+            <div class="auth-buttons">
+                <a href="/logout" class="btn btn-primary">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    <% if (error) { %>
+        <div class="fade-message alert-danger">
+            <%= error %>
+        </div>
+    <% } %>
+
+    <% if (success) { %>
+        <div class="fade-message alert-success">
+            <%= success %>
+        </div>
+    <% } %>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="header">
+            <h1>My Posts</h1>
+            <button onclick="openCreateModal()" class="btn btn-primary">+ Create New Post</button>
+        </div>
+
+        <!-- Posts Grid -->
+        <% if (posts && posts.length > 0) { %>
+            <div class="posts-grid">
+                <% posts.forEach(function(post) { %>
+                    <div class="post-card">
+                        <div class="post-image">
+                            <% if (post.image) { %>
+                                <img src="/<%= post.image.replace(/\\/g, '/') %>" alt="<%= post.title %>" onerror="this.style.display='none'" />
+                            <% } %>
+                            <% if (!post.image || post.image === '') { %>
+                                <div style="width:100%; height:100%; background:linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:3rem; position:absolute;">
+                                    <%= post.title.charAt(0).toUpperCase() %>
+                                </div>
+                            <% } %>
+                        </div>
+
+                        <div class="post-content">
+                            <h3 class="post-title"><%= post.title %></h3>
+                            <p class="post-excerpt"><%= post.description %></p>
+
+                            <div class="post-footer">
+                                <div class="post-stats">
+                                    <span>❤️ <%= post.likes || 0 %></span>
+                                    <span>💬 <%= post.comments || 0 %></span>
+                                </div>
+                                <div class="post-actions">
+                                    <a href="/edit-post/<%= post._id %>" class="btn btn-edit">✏️ Edit</a>
+                                    <button onclick="confirmDelete('<%= post._id %>', '<%= post.title %>')" class="btn btn-danger">🗑️ Delete</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hidden data attributes -->
+                        <div style="display: none;">
+                            <span class="post-data" data-id="<%= post._id %>"></span>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } else { %>
+            <div class="no-posts">
+                <p>📭 You haven't created any posts yet</p>
+                <button onclick="openCreateModal()" class="btn btn-primary">Create Your First Post</button>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- Delete Confirmation Dialog -->
+    <div class="delete-confirm" id="deleteConfirm">
+        <div class="confirm-dialog">
+            <h3>Delete Post?</h3>
+            <p>Are you sure you want to delete "<span id="deletePostTitle"></span>"? This action cannot be undone.</p>
+            <div class="confirm-actions">
+                <button class="confirm-cancel" onclick="cancelDelete()">Cancel</button>
+                <button class="confirm-delete" onclick="deletePost()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Post Modal -->
+    <div class="modal" id="createPostModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✨ Create New Post</h2>
+                <button class="close-btn" onclick="closeCreateModal()">✕</button>
+            </div>
+
+            <form id="createPostForm" enctype="multipart/form-data" method="POST" action="/create-post">
+                <div class="modal-body">
+                    <!-- Title Input -->
+                    <div class="form-group">
+                        <label for="postTitle">Post Title</label>
+                        <input 
+                            type="text" 
+                            id="postTitle" 
+                            name="title" 
+                            placeholder="Enter your post title"
+                            required
+                            maxlength="100"
+                        />
+                    </div>
+
+                    <!-- Description Input -->
+                    <div class="form-group">
+                        <label for="postDescription">Description</label>
+                        <textarea 
+                            id="postDescription" 
+                            name="description" 
+                            placeholder="Write your post description here..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div class="form-group">
+                        <label for="postImage">Post Image</label>
+                        <div class="file-upload" id="fileUpload">
+                            <div class="file-upload-icon">🖼️</div>
+                            <div class="file-upload-text">Click to upload or drag and drop</div>
+                            <div class="file-upload-hint">PNG, JPG, GIF up to 5MB</div>
+                            <input 
+                                type="file" 
+                                id="postImage" 
+                                name="image" 
+                                accept="image/*"
+                            />
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div class="image-preview" id="imagePreview">
+                            <div class="preview-container">
+                                <img id="previewImg" src="" alt="Preview" />
+                                <div class="preview-badge">✓</div>
+                            </div>
+                            <div class="image-preview-info">
+                                <div class="image-preview-name" id="previewName"></div>
+                                <div class="preview-actions">
+                                    <button type="button" class="btn-remove-image" onclick="removeImage()">✕ Remove Image</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" onclick="closeCreateModal()">Cancel</button>
+                    <button type="submit" class="btn btn-submit">Create Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 BlogShare. All rights reserved. | <a href="#">Privacy Policy</a></p>
+    </footer>
+
+    <script>
+        // Delete Post Functions
+        let deletePostId = null;
+
+        function confirmDelete(postId, postTitle) {
+            deletePostId = postId;
+            document.getElementById('deletePostTitle').textContent = postTitle;
+            document.getElementById('deleteConfirm').classList.add('active');
+        }
+
+        function cancelDelete() {
+            deletePostId = null;
+            document.getElementById('deleteConfirm').classList.remove('active');
+        }
+
+        function deletePost() {
+            if (deletePostId) {
+                // Submit form via POST
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/delete-post/${deletePostId}`;
+                
+                const csrfToken = document.querySelector('input[name="_csrf"]');
+                if (csrfToken) {
+                    form.appendChild(csrfToken.cloneNode(true));
+                }
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        // Create Post Modal Functions
+        function openCreateModal() {
+            document.getElementById('createPostModal').classList.add('active');
+        }
+
+        function closeCreateModal() {
+            document.getElementById('createPostModal').classList.remove('active');
+            document.getElementById('createPostForm').reset();
+            document.getElementById('imagePreview').classList.remove('active');
+        }
+
+        // File upload handling
+        const fileUpload = document.getElementById('fileUpload');
+        const fileInput = document.getElementById('postImage');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const previewName = document.getElementById('previewName');
+
+        // Click to upload
+        if (fileUpload) {
+            fileUpload.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            // Drag and drop
+            fileUpload.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                fileUpload.classList.add('active');
+            });
+
+            fileUpload.addEventListener('dragleave', () => {
+                fileUpload.classList.remove('active');
+            });
+
+            fileUpload.addEventListener('drop', (e) => {
+                e.preventDefault();
+                fileUpload.classList.remove('active');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleImageUpload();
+                }
+            });
+        }
+
+        // File input change
+        if (fileInput) {
+            fileInput.addEventListener('change', handleImageUpload);
+        }
+
+        function handleImageUpload() {
+            const file = fileInput.files[0];
+            
+            if (file) {
+                // Check file size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    fileInput.value = '';
+                    imagePreview.classList.remove('active');
+                    return;
+                }
+
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImg.src = e.target.result;
+                    previewName.textContent = '📁 ' + file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
+                    imagePreview.classList.add('active');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeImage() {
+            fileInput.value = '';
+            previewImg.src = '';
+            previewName.textContent = '';
+            imagePreview.classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('createPostModal');
+            const deleteDialog = document.getElementById('deleteConfirm');
+            
+            if (event.target === modal) {
+                closeCreateModal();
+            }
+            if (event.target === deleteDialog) {
+                cancelDelete();
+            }
+        }
+
+        // Form submission validation
+        if (document.getElementById('createPostForm')) {
+            document.getElementById('createPostForm').addEventListener('submit', function(e) {
+                const title = document.getElementById('postTitle').value.trim();
+                const description = document.getElementById('postDescription').value.trim();
+
+                if (!title || !description) {
+                    e.preventDefault();
+                    alert('Please fill in all required fields');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,6 +1,6 @@
 import express from "express";
 import isAuthenticated from "../middleware/isAuthenticated.js";
-import { createPost, deletePost, getAllPosts, getPostById, updatePost } from "../controller/blog.controller.js";
+import { createPost, deletePost, getAllPosts, getMyPosts, getPostById, updatePost } from "../controller/blog.controller.js";
 import { upload } from "../middleware/multer.js";
 
 
@@ -10,7 +10,9 @@ const router = express.Router();
 router.post("/create", isAuthenticated, upload.single("image"), createPost);
 
 // Get all posts
-router.get("/all", getAllPosts);
+router.get("/all", getAllPosts);  
+
+router.get('/myPosts', isAuthenticated, getMyPosts );
 
 // Get post by ID 
 router.get("/:id", isAuthenticated, getPostById);

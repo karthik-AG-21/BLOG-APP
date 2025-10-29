@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 import { Post } from './models/blog.model.js';
 import flash from 'connect-flash';
 import { TokenUser } from "./middleware/tokenEjs.js";
-import { error } from 'console';
+import isAuthenticated from "./middleware/isAuthenticated.js";
 
 
 
@@ -121,7 +121,22 @@ app.get("/otpVarify", async (req, res) => {
 
 app.get("/userHome", async (req, res) => {
   const posts = await Post.find().populate("userId", "name email").lean();
-  res.render("pages/userHome", { title: "User Home" , posts,  error: null, success: null });
+  const post = await Post.findById(req.params.id).populate("userId", "name email").lean();
+
+  res.render("pages/userHome", { title: "User Home" , posts, post,  error: null, success: null });
+});
+
+app.get("/myPosts", isAuthenticated, async (req, res) => {
+   const userId = req.user.id;
+   const posts = await Post.find({ userId: userId })
+         .populate("userId", "name email")
+         .sort({ createdAt: -1 });
+   res.render("pages/myPosts", { 
+     title: "My Posts", 
+     posts, 
+     error: null, 
+     success: null 
+   });
 });
 
 

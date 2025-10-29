@@ -692,7 +692,7 @@
             <div class="logo">BlogShare</div>
             <div class="nav-links">
                 <a href="#">Home</a>
-                <a href="#">Explore</a>
+                <a onclick="window.location.href='/myPosts'">My posts</a>
                 <a href="#">About</a>
             </div>
             <div class="auth-buttons">
@@ -723,7 +723,7 @@
         <!-- Posts Grid -->
         <div class="posts-grid">
             <% posts.forEach(function(post) { %>
-                <div class="post-card" onclick="openPostModal(event, '<%= post.title.replace(/'/g, "\\'") %>', '<%= post.description.replace(/'/g, "\\'") %>', '<%= post.userId && post.userId.name ? post.userId.name : "Unknown User" %>', '<%= post.createdAt ? new Date(post.createdAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "Just now" %>', '<%= post.likes || 0 %>', '<%= post.comments || 0 %>', '<%= post.image ? post.image.replace(/\\\\/g, '/') : "" %>', '<%= post.title.charAt(0).toUpperCase() %>')">
+                <div class="post-card" onclick="openPostModal(event, this)">
                     <div class="post-image">
                         <% if (post.image) { %>
                             <img src="/<%= post.image.replace(/\\/g, '/') %>" alt="<%= post.title %>" />
@@ -755,6 +755,18 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Hidden data attributes -->
+                    <div style="display: none;">
+                        <span class="post-data" data-title="<%= post.title %>"></span>
+                        <span class="post-data" data-description="<%= post.description %>"></span>
+                        <span class="post-data" data-author="<%= post.userId && post.userId.name ? post.userId.name : 'Unknown User' %>"></span>
+                        <span class="post-data" data-date="<%= post.createdAt ? new Date(post.createdAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : 'Just now' %>"></span>
+                        <span class="post-data" data-likes="<%= post.likes || 0 %>"></span>
+                        <span class="post-data" data-comments="<%= post.comments || 0 %>"></span>
+                        <span class="post-data" data-image="<%= post.image ? post.image.replace(/\\/g, '/') : '' %>"></span>
+                        <span class="post-data" data-firstchar="<%= post.title.charAt(0).toUpperCase() %>"></span>
+                    </div>
                 </div>
             <% }); %>
         </div>
@@ -766,7 +778,6 @@
             <button class="close-btn" onclick="closeModal('postModal')">✕</button>
             
             <div class="modal-header" id="modalHeader">
-                 <img src="" alt="Post Image" id="modalImage"   >
             </div>
 
             <div class="modal-body">
@@ -795,36 +806,51 @@
     </footer>
 
     <script>
-     function openPostModal(event, title, description, author, date, likes, comments, image, firstChar) {
+        function openPostModal(event, cardElement) {
             event.preventDefault();
             event.stopPropagation();
             
-            const header = document.getElementById('modalHeader');
+            // Get data from hidden data attributes
+            const dataSpans = cardElement.querySelectorAll('.post-data');
+            const data = {};
+            dataSpans.forEach(span => {
+                Object.keys(span.dataset).forEach(key => {
+                    data[key] = span.dataset[key];
+                });
+            });
+
+            const { title, description, author, date, likes, comments, image, firstchar } = data;
+
+            // Set modal header image
+            const header = document.getElementById("modalHeader");
             header.innerHTML = '';
-            
+
             if (image && image.trim() !== '') {
                 const img = document.createElement('img');
-                img.src = `uploads/${image}`;
+                img.src = '/' + image;
                 img.alt = title;
                 img.style.width = '100%';
                 img.style.height = '100%';
                 img.style.objectFit = 'cover';
+                
                 img.onerror = function() {
-                    header.textContent = firstChar;
+                    header.textContent = firstchar;
                     header.style.fontSize = '5rem';
                     header.style.display = 'flex';
                     header.style.alignItems = 'center';
                     header.style.justifyContent = 'center';
                 };
+                
                 header.appendChild(img);
             } else {
-                header.textContent = firstChar;
+                header.textContent = firstchar;
                 header.style.fontSize = '5rem';
                 header.style.display = 'flex';
                 header.style.alignItems = 'center';
                 header.style.justifyContent = 'center';
             }
-            
+
+            // Set modal content
             document.getElementById('modalTitle').textContent = title;
             document.getElementById('modalDescription').textContent = description;
             document.getElementById('modalAuthor').textContent = author;
@@ -832,7 +858,8 @@
             document.getElementById('modalLikes').textContent = likes;
             document.getElementById('modalComments').textContent = comments;
             document.getElementById('modalAvatar').textContent = author.charAt(0).toUpperCase();
-            
+
+            // Show modal
             const modal = document.getElementById('postModal');
             modal.classList.add('active');
         }

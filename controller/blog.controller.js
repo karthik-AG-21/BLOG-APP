@@ -36,15 +36,49 @@ export const getAllPosts = async (req, res) => {
   }
 };
 
+
+// Get only logged-in user's posts
+export const getMyPosts = async (req, res) => {
+  try {
+    // Get the logged-in user's ID from session/token
+    const userId = req.user._id; // This comes from your authentication middleware
+    
+    // Find all posts where userId matches the logged-in user
+    const posts = await Post.find({ userId: userId })
+      .populate("userId", "name email")
+      .sort({ createdAt: -1 }); // Sort by newest first
+    
+    if (!posts || posts.length === 0) {
+      return res.render("pages/myPosts", { 
+        error: null,
+        success: null, 
+        posts: [] 
+      });
+    }
+
+    res.render("pages/myPosts", {
+      error: null,
+      success: null,
+      posts: posts
+    });
+  } catch (err) {
+    res.render("pages/myPosts", { 
+      error: err.message,
+      success: false,
+      posts: [] 
+    });
+  }
+};
+
 // Get a single post by ID
 export const getPostById = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate("userId", "name email");
-    if (!post) return res.status(404).json({ message: "Post not found" });
+    const post = await Post.findById(req.body.id).populate("userId", "name email");
+    if (!post) return res.render("pages/myPosts", { error: "Post not found" ,  success: false, post:[]});
 
-    res.json({ success: true, post });
+    res.render("pages/myPosts", {error: null , success: true, post });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    res.render("pages/myPosts", { success: false, error: err.message });
   }
 };
 
