@@ -12,6 +12,9 @@ import { Post } from './models/blog.model.js';
 import flash from 'connect-flash';
 import { TokenUser } from "./middleware/tokenEjs.js";
 import isAuthenticated from "./middleware/isAuthenticated.js";
+import methodOverride from 'method-override';
+
+
 
 
 
@@ -25,6 +28,8 @@ connectDB();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
+app.use(methodOverride('_method'));
 app.use(TokenUser);
 app.use(flash());
 app.use(cookieParser());

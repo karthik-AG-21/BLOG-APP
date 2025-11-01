@@ -199,10 +199,21 @@
             transform: translateY(-2px);
         }
 
+        .btn-preview {
+            background: linear-gradient(135deg, #f093fb 0%, #667eea 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-preview:hover {
+            transform: translateY(-2px);
+        }
+
         @keyframes moveBackground {
             0% {
                 transform: translate(0, 0);
             }
+
             100% {
                 transform: translate(50px, 50px);
             }
@@ -226,9 +237,12 @@
         }
 
         @keyframes float {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0px);
             }
+
             50% {
                 transform: translateY(-20px);
             }
@@ -265,6 +279,7 @@
                 opacity: 0;
                 transform: translateY(-30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -348,6 +363,7 @@
             0% {
                 transform: translateX(-100%) translateY(-100%) rotate(45deg);
             }
+
             100% {
                 transform: translateX(100%) translateY(100%) rotate(45deg);
             }
@@ -449,6 +465,7 @@
                 transform: translateY(50px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -514,6 +531,7 @@
             align-items: center;
             justify-content: center;
             padding: 1rem;
+            overflow-y: auto;
         }
 
         .modal.active {
@@ -525,6 +543,7 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -535,13 +554,14 @@
             border-radius: 25px;
             width: 100%;
             max-width: 600px;
-            max-height: 90vh;
+            max-height: none;
             display: flex;
             flex-direction: column;
             position: relative;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             overflow: hidden;
+            margin: auto;
         }
 
         .modal-header {
@@ -551,6 +571,7 @@
             justify-content: space-between;
             align-items: center;
             color: white;
+            flex-shrink: 0;
         }
 
         .modal-header h2 {
@@ -572,6 +593,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
         }
 
         .close-btn:hover {
@@ -677,11 +699,30 @@
             animation: slideDown 0.4s ease;
         }
 
+        /* For current image display */
+        #currentImagePreview {
+            display: none !important;
+        }
+
+        #currentImagePreview.active {
+            display: block !important;
+        }
+
+        #currentImg {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            border: 3px solid white;
+        }
+
         @keyframes slideDown {
             from {
                 opacity: 0;
                 transform: translateY(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -765,12 +806,15 @@
             box-shadow: 0 6px 20px rgba(245, 87, 108, 0.3);
         }
 
+
+
         .modal-footer {
             padding: 1.5rem 2rem;
             display: flex;
             gap: 1rem;
             justify-content: flex-end;
             border-top: 2px solid #e9ecef;
+            flex-shrink: 0;
         }
 
         footer {
@@ -818,14 +862,18 @@
         }
 
         @keyframes fadeOut {
-            0%, 80% {
+
+            0%,
+            80% {
                 opacity: 1;
             }
+
             100% {
                 opacity: 0;
                 display: none;
             }
         }
+
 
         @media (max-width: 768px) {
             .header {
@@ -853,6 +901,77 @@
             .modal-header h2 {
                 font-size: 1.5rem;
             }
+
+            .modal-footer {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+
+            .modal-footer .btn {
+                width: 100%;
+                padding: 0.9rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .form-group {
+                margin-bottom: 1.2rem;
+            }
+
+            .form-group input[type="text"],
+            .form-group textarea {
+                padding: 1rem;
+                font-size: 16px;
+            }
+
+            .form-group label {
+                font-size: 0.95rem;
+            }
+
+            .image-preview img {
+                width: 150px;
+                height: 150px;
+            }
+
+            .modal-body {
+                padding: 1.5rem;
+            }
+
+            .modal-footer {
+                padding: 1rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .modal-content {
+                border-radius: 15px;
+            }
+
+            .modal-header {
+                padding: 1.5rem;
+            }
+
+            .modal-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .form-group textarea {
+                min-height: 100px;
+            }
+
+            .modal-footer .btn {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .close-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
@@ -863,7 +982,7 @@
         <div class="nav-container">
             <a href="/home" class="logo">BlogShare</a>
             <div class="nav-links">
-               <a onclick="window.location.href='/userHome'">Home</a>
+                <a onclick="window.location.href='/userHome'">Home</a>
                 <a onclick="window.location.href='/myPosts'">My Posts</a>
                 <a href="#">About</a>
             </div>
@@ -878,297 +997,648 @@
         <div class="fade-message alert-danger">
             <%= error %>
         </div>
-    <% } %>
-
-    <% if (success) { %>
-        <div class="fade-message alert-success">
-            <%= success %>
-        </div>
-    <% } %>
-
-    <!-- Main Content -->
-    <div class="container">
-        <div class="header">
-            <h1>My Posts</h1>
-            <button onclick="openCreateModal()" class="btn btn-primary">+ Create New Post</button>
-        </div>
-
-        <!-- Posts Grid -->
-        <% if (posts && posts.length > 0) { %>
-            <div class="posts-grid">
-                <% posts.forEach(function(post) { %>
-                    <div class="post-card">
-                        <div class="post-image">
-                            <% if (post.image) { %>
-                                <img src="/<%= post.image.replace(/\\/g, '/') %>" alt="<%= post.title %>" onerror="this.style.display='none'" />
-                            <% } %>
-                            <% if (!post.image || post.image === '') { %>
-                                <div style="width:100%; height:100%; background:linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:3rem; position:absolute;">
-                                    <%= post.title.charAt(0).toUpperCase() %>
-                                </div>
-                            <% } %>
-                        </div>
-
-                        <div class="post-content">
-                            <h3 class="post-title"><%= post.title %></h3>
-                            <p class="post-excerpt"><%= post.description %></p>
-
-                            <div class="post-footer">
-                                <div class="post-stats">
-                                    <span>❤️ <%= post.likes || 0 %></span>
-                                    <span>💬 <%= post.comments || 0 %></span>
-                                </div>
-                                <div class="post-actions">
-                                    <a href="/edit-post/<%= post._id %>" class="btn btn-edit">✏️ Edit</a>
-                                    <button onclick="confirmDelete('<%= post._id %>', '<%= post.title %>')" class="btn btn-danger">🗑️ Delete</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Hidden data attributes -->
-                        <div style="display: none;">
-                            <span class="post-data" data-id="<%= post._id %>"></span>
-                        </div>
-                    </div>
-                <% }); %>
-            </div>
-        <% } else { %>
-            <div class="no-posts">
-                <p>📭 You haven't created any posts yet</p>
-                <button onclick="openCreateModal()" class="btn btn-primary">Create Your First Post</button>
-            </div>
         <% } %>
-    </div>
 
-    <!-- Delete Confirmation Dialog -->
-    <div class="delete-confirm" id="deleteConfirm">
-        <div class="confirm-dialog">
-            <h3>Delete Post?</h3>
-            <p>Are you sure you want to delete "<span id="deletePostTitle"></span>"? This action cannot be undone.</p>
-            <div class="confirm-actions">
-                <button class="confirm-cancel" onclick="cancelDelete()">Cancel</button>
-                <button class="confirm-delete" onclick="deletePost()">Delete</button>
-            </div>
-        </div>
-    </div>
+            <% if (success) { %>
+                <div class="fade-message alert-success">
+                    <%= success %>
+                </div>
+                <% } %>
 
-    <!-- Create Post Modal -->
-    <div class="modal" id="createPostModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>✨ Create New Post</h2>
-                <button class="close-btn" onclick="closeCreateModal()">✕</button>
-            </div>
-
-            <form id="createPostForm" enctype="multipart/form-data" method="POST" action="/create-post">
-                <div class="modal-body">
-                    <!-- Title Input -->
-                    <div class="form-group">
-                        <label for="postTitle">Post Title</label>
-                        <input 
-                            type="text" 
-                            id="postTitle" 
-                            name="title" 
-                            placeholder="Enter your post title"
-                            required
-                            maxlength="100"
-                        />
-                    </div>
-
-                    <!-- Description Input -->
-                    <div class="form-group">
-                        <label for="postDescription">Description</label>
-                        <textarea 
-                            id="postDescription" 
-                            name="description" 
-                            placeholder="Write your post description here..."
-                            required
-                        ></textarea>
-                    </div>
-
-                    <!-- Image Upload -->
-                    <div class="form-group">
-                        <label for="postImage">Post Image</label>
-                        <div class="file-upload" id="fileUpload">
-                            <div class="file-upload-icon">🖼️</div>
-                            <div class="file-upload-text">Click to upload or drag and drop</div>
-                            <div class="file-upload-hint">PNG, JPG, GIF up to 5MB</div>
-                            <input 
-                                type="file" 
-                                id="postImage" 
-                                name="image" 
-                                accept="image/*"
-                            />
+                    <!-- Main Content -->
+                    <div class="container">
+                        <div class="header">
+                            <h1>My Posts</h1>
+                            <button onclick="openCreateModal()" class="btn btn-primary">+ Create New Post</button>
                         </div>
 
-                        <!-- Image Preview -->
-                        <div class="image-preview" id="imagePreview">
-                            <div class="preview-container">
-                                <img id="previewImg" src="" alt="Preview" />
-                                <div class="preview-badge">✓</div>
+                        <!-- Posts Grid -->
+                        <% if (posts && posts.length> 0) { %>
+                            <div class="posts-grid">
+                                <% posts.forEach(function(post) { %>
+                                    <div class="post-card">
+                                        <div class="post-image">
+                                            <% if (post.image) { %>
+                                                <img src="/<%= post.image.replace(/\\/g, '/') %>"
+                                                    alt="<%= post.title %>" onerror="this.style.display='none'" />
+                                                <% } %>
+                                                    <% if (!post.image || post.image==='' ) { %>
+                                                        <div
+                                                            style="width:100%; height:100%; background:linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:3rem; position:absolute;">
+                                                            <%= post.title.charAt(0).toUpperCase() %>
+                                                        </div>
+                                                        <% } %>
+                                        </div>
+
+                                        <div class="post-content">
+                                            <h3 class="post-title">
+                                                <%= post.title %>
+                                            </h3>
+                                            <p class="post-excerpt">
+                                                <%= post.description %>
+                                            </p>
+
+                                            <div class="post-footer">
+                                                <div class="post-stats">
+                                                    <span>❤️ <%= post.likes || 0 %></span>
+                                                    <span>💬 <%= post.comments || 0 %></span>
+                                                </div>
+                                                <div class="post-actions">
+                                                    <button onclick="openEditModal('<%= post._id %>', {
+                                                      title: '<%= post.title.replace(/'/g, " \\'") %>',
+                                                        description: '<%= post.description.replace(/'/g, "\\'" ) %>',
+                                                            image: '<%= (post.image || '' ).replace(/\\/g, '/' ) %>'
+                                                                })" class="btn btn-edit">✏️ Edit</button>
+                                                    <button
+                                                        onclick="confirmDelete('<%= post._id %>', '<%= post.title %>')"
+                                                        class="btn btn-danger">🗑️ Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Hidden data attributes -->
+                                        <div style="display: none;">
+                                            <span class="post-data" data-id="<%= post._id %>"></span>
+                                        </div>
+                                    </div>
+                                    <% }); %>
                             </div>
-                            <div class="image-preview-info">
-                                <div class="image-preview-name" id="previewName"></div>
-                                <div class="preview-actions">
-                                    <button type="button" class="btn-remove-image" onclick="removeImage()">✕ Remove Image</button>
+                            <% } else { %>
+                                <div class="no-posts">
+                                    <p>📭 You haven't created any posts yet</p>
+                                    <button onclick="openCreateModal()" class="btn btn-primary">Create Your First
+                                        Post</button>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                <% } %>
+                                    <!-- Delete Confirmation Dialog -->
+                                    <div class="delete-confirm" id="deleteConfirm">
+                                        <div class="confirm-dialog">
+                                            <h3>Delete Post?</h3>
+                                            <p>Are you sure you want to delete "<span id="deletePostTitle"></span>"?
+                                                This action cannot be undone.</p>
+                                            <div class="confirm-actions">
+                                                <button type="button" class="confirm-cancel"
+                                                    onclick="cancelDelete()">Cancel</button>
+                                                <button type="button" class="confirm-delete"
+                                                    onclick="deletePost()">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-cancel" onclick="closeCreateModal()">Cancel</button>
-                    <button type="submit" class="btn btn-submit">Create Post</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 BlogShare. All rights reserved. | <a href="#">Privacy Policy</a></p>
-    </footer>
+                                    <!-- Create Post Modal -->
+                                    <div class="modal" id="createPostModal">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h2>✨ Create New Post</h2>
+                                                <button class="close-btn" onclick="closeCreateModal()">✕</button>
+                                            </div>
 
-    <script>
-        // Delete Post Functions
-        let deletePostId = null;
+                                            <form id="createPostForm" enctype="multipart/form-data" method="POST"
+                                                action="/api/posts/create">
+                                                <div class="modal-body">
+                                                    <!-- Title Input -->
+                                                    <div class="form-group">
+                                                        <label for="postTitle">
+                                                            <span style="color: #667eea; font-weight: 700;">📝</span>
+                                                            Post Title
+                                                            <span style="color: #f5576c; font-size: 0.9rem;">*</span>
+                                                        </label>
+                                                        <input type="text" id="postTitle" name="title"
+                                                            placeholder="Enter your post title (max 30 characters)"
+                                                            required maxlength="30" />
+                                                        <small style="color: #999; display: block; margin-top: 0.3rem;">
+                                                            <span id="titleCount">0</span>/30 characters
+                                                        </small>
+                                                    </div>
 
-        function confirmDelete(postId, postTitle) {
-            deletePostId = postId;
-            document.getElementById('deletePostTitle').textContent = postTitle;
-            document.getElementById('deleteConfirm').classList.add('active');
-        }
+                                                    <!-- Description Input -->
+                                                    <div class="form-group">
+                                                        <label for="postDescription">
+                                                            <span style="color: #667eea; font-weight: 700;">✍️</span>
+                                                            Description
+                                                            <span style="color: #f5576c; font-size: 0.9rem;">*</span>
+                                                        </label>
+                                                        <textarea id="postDescription" name="description"
+                                                            placeholder="Write your post description here... Share your thoughts, ideas, and stories!"
+                                                            required maxlength="250"></textarea>
+                                                        <small style="color: #999; display: block; margin-top: 0.3rem;">
+                                                            <span id="descCount">0</span>/250 characters
+                                                        </small>
+                                                    </div>
 
-        function cancelDelete() {
-            deletePostId = null;
-            document.getElementById('deleteConfirm').classList.remove('active');
-        }
+                                                    <!-- Image Upload -->
+                                                    <div class="form-group">
+                                                        <label for="postImage">
+                                                            <span style="color: #667eea; font-weight: 700;">🖼️</span>
+                                                            Post Image
+                                                            (Optional)
+                                                        </label>
+                                                        <div class="file-upload" id="fileUpload">
+                                                            <div class="file-upload-icon">📤</div>
+                                                            <div class="file-upload-text">Click to upload or drag and
+                                                                drop</div>
+                                                            <div class="file-upload-hint">PNG, JPG, GIF, WebP up to 5MB
+                                                            </div>
+                                                            <input type="file" id="postImage" name="image"
+                                                                accept="image/*" />
+                                                        </div>
 
-        function deletePost() {
-            if (deletePostId) {
-                // Submit form via POST
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/delete-post/${deletePostId}`;
-                
-                const csrfToken = document.querySelector('input[name="_csrf"]');
-                if (csrfToken) {
-                    form.appendChild(csrfToken.cloneNode(true));
-                }
-                
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
 
-        // Create Post Modal Functions
-        function openCreateModal() {
-            document.getElementById('createPostModal').classList.add('active');
-        }
 
-        function closeCreateModal() {
-            document.getElementById('createPostModal').classList.remove('active');
-            document.getElementById('createPostForm').reset();
-            document.getElementById('imagePreview').classList.remove('active');
-        }
 
-        // File upload handling
-        const fileUpload = document.getElementById('fileUpload');
-        const fileInput = document.getElementById('postImage');
-        const imagePreview = document.getElementById('imagePreview');
-        const previewImg = document.getElementById('previewImg');
-        const previewName = document.getElementById('previewName');
+                                                        <!-- Image Preview -->
+                                                        <div class="image-preview" id="imagePreview">
+                                                            <div class="preview-container">
+                                                                <img id="previewImg" src="" alt="Preview" />
+                                                                <div class="preview-badge">✓</div>
+                                                            </div>
+                                                            <div class="image-preview-info">
+                                                                <div class="image-preview-name" id="previewName"></div>
+                                                                <div class="preview-actions">
+                                                                    <button type="button" class="btn-remove-image"
+                                                                        onclick="removeImage()">✕ Remove Image</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-        // Click to upload
-        if (fileUpload) {
-            fileUpload.addEventListener('click', () => {
-                fileInput.click();
-            });
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-cancel"
+                                                        onclick="closeCreateModal()">❌
+                                                        Cancel</button>
+                                                    <button type="button" class="btn btn-preview"
+                                                        onclick="previewPost()">👁️
+                                                        Preview</button>
+                                                    <button type="submit" class="btn btn-submit">✨ Create Post</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!-- CORRECTED EDIT POST MODAL -->
+                                    <div class="modal" id="editPostModal">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h2>✏️ Edit Post</h2>
+                                                <button class="close-btn" onclick="closeEditModal()">✕</button>
+                                            </div>
 
-            // Drag and drop
-            fileUpload.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                fileUpload.classList.add('active');
-            });
 
-            fileUpload.addEventListener('dragleave', () => {
-                fileUpload.classList.remove('active');
-            });
+                                            <form id="editPostForm" enctype="multipart/form-data" method="POST"
+                                                action="/api/posts/update">
 
-            fileUpload.addEventListener('drop', (e) => {
-                e.preventDefault();
-                fileUpload.classList.remove('active');
-                
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    fileInput.files = files;
-                    handleImageUpload();
-                }
-            });
-        }
+                                                <!-- ADD THIS HIDDEN INPUT AT THE START -->
+                                                <input type="hidden" id="postIdInput" name="postId" value="">
 
-        // File input change
-        if (fileInput) {
-            fileInput.addEventListener('change', handleImageUpload);
-        }
+                                                <div class="modal-body">
+                                                    <!-- Title Input -->
+                                                    <div class="form-group">
+                                                        <label for="editPostTitle">
+                                                            <span style="color: #667eea; font-weight: 700;">📝</span>
+                                                            Post Title
+                                                            <span style="color: #f5576c; font-size: 0.9rem;">*</span>
+                                                        </label>
+                                                        <input type="text" id="editPostTitle" name="title"
+                                                            placeholder="Enter your post title (max 30 characters)"
+                                                            required maxlength="30" />
+                                                        <small style="color: #999; display: block; margin-top: 0.3rem;">
+                                                            <span id="editTitleCount">0</span>/30 characters
+                                                        </small>
+                                                    </div>
 
-        function handleImageUpload() {
-            const file = fileInput.files[0];
-            
-            if (file) {
-                // Check file size (5MB)
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('File size must be less than 5MB');
-                    fileInput.value = '';
-                    imagePreview.classList.remove('active');
-                    return;
-                }
+                                                    <!-- Description Input -->
+                                                    <div class="form-group">
+                                                        <label for="editPostDescription">
+                                                            <span style="color: #667eea; font-weight: 700;">✍️</span>
+                                                            Description
+                                                            <span style="color: #f5576c; font-size: 0.9rem;">*</span>
+                                                        </label>
+                                                        <textarea id="editPostDescription" name="description"
+                                                            placeholder="Write your post description here..." required
+                                                            maxlength="250"></textarea>
+                                                        <small style="color: #999; display: block; margin-top: 0.3rem;">
+                                                            <span id="editDescCount">0</span>/250 characters
+                                                        </small>
+                                                    </div>
 
-                // Show preview
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    previewImg.src = e.target.result;
-                    previewName.textContent = '📁 ' + file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
-                    imagePreview.classList.add('active');
-                };
-                reader.readAsDataURL(file);
-            }
-        }
+                                                    <!-- Image Upload -->
+                                                    <div class="form-group">
+                                                        <label for="editPostImage">
+                                                            <span style="color: #667eea; font-weight: 700;">🖼️</span>
+                                                            Post Image
+                                                            (Optional)
+                                                        </label>
+                                                        <div class="file-upload" id="editFileUpload">
+                                                            <div class="file-upload-icon">📤</div>
+                                                            <div class="file-upload-text">Click to upload or drag and
+                                                                drop</div>
+                                                            <div class="file-upload-hint">PNG, JPG, GIF, WebP up to 5MB
+                                                            </div>
+                                                            <input type="file" id="editPostImage" name="image"
+                                                                accept="image/*" />
+                                                        </div>
 
-        function removeImage() {
-            fileInput.value = '';
-            previewImg.src = '';
-            previewName.textContent = '';
-            imagePreview.classList.remove('active');
-        }
+                                                        <!-- Current Image Display -->
+                                                        <div class="image-preview " id="currentImagePreview"
+                                                            style="margin-top: 1.5rem;">
+                                                            <p
+                                                                style="color: #999; font-size: 0.9rem; margin-bottom: 1rem;">
+                                                                Current Image:</p>
+                                                            <div class="preview-container">
+                                                                <img id="currentImg" src="" alt="Current" />
+                                                            </div>
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('createPostModal');
-            const deleteDialog = document.getElementById('deleteConfirm');
-            
-            if (event.target === modal) {
-                closeCreateModal();
-            }
-            if (event.target === deleteDialog) {
-                cancelDelete();
-            }
-        }
+                                                            <button type="button" class="btn-remove-image"
+                                                                onclick="removeCurrentImage()">✕ Remove Current
+                                                                Image</button>
+                                                        </div>
 
-        // Form submission validation
-        if (document.getElementById('createPostForm')) {
-            document.getElementById('createPostForm').addEventListener('submit', function(e) {
-                const title = document.getElementById('postTitle').value.trim();
-                const description = document.getElementById('postDescription').value.trim();
+                                                        <!-- New Image Preview -->
+                                                        <div class="image-preview" id="editImagePreview">
+                                                            <div class="preview-container">
+                                                                <img id="editPreviewImg" src="" alt="Preview" />
+                                                                <div class="preview-badge">✓</div>
+                                                            </div>
+                                                            <div class="image-preview-info">
+                                                                <div class="image-preview-name" id="editPreviewName">
+                                                                </div>
+                                                                <div class="preview-actions">
+                                                                    <button type="button" class="btn-remove-image"
+                                                                        onclick="removeEditImage()">✕ Remove New
+                                                                        Image</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                if (!title || !description) {
-                    e.preventDefault();
-                    alert('Please fill in all required fields');
-                }
-            });
-        }
-    </script>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-cancel"
+                                                        onclick="closeEditModal()">❌ Cancel</button>
+                                                    <button type="button" class="btn btn-preview"
+                                                        onclick="previewEditPost()">👁️ Preview</button>
+                                                    <button type="submit" class="btn btn-submit">💾 Save
+                                                        Changes</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <!-- Footer -->
+                                    <footer>
+                                        <p>&copy; 2025 BlogShare. All rights reserved. | <a href="#">Privacy Policy</a>
+                                        </p>
+                                    </footer>
+
+                                    <script>
+                                        // Edit Modal Functions
+                                        let editPostId = null;
+                                        let removeCurrentImageFlag = false; // ✅ Flag to track if removing current image
+
+                                        function openEditModal(postId, postData) {
+                                            editPostId = postId;
+                                            removeCurrentImageFlag = false; // ✅ Reset flag
+
+                                            // Set the form action dynamically
+                                            document.getElementById('editPostForm').action = `/api/posts/${postId}?_method=PUT`;
+
+                                            // Set hidden input value
+                                            document.getElementById('postIdInput').value = postId;
+
+                                            // ✅ Create or update hidden input for removeImage flag
+                                            let removeImageInput = document.getElementById('removeImageInput');
+                                            if (!removeImageInput) {
+                                                removeImageInput = document.createElement('input');
+                                                removeImageInput.type = 'hidden';
+                                                removeImageInput.id = 'removeImageInput';
+                                                removeImageInput.name = 'removeImage';
+                                                document.getElementById('editPostForm').appendChild(removeImageInput);
+                                            }
+                                            removeImageInput.value = 'false';
+
+                                            // Populate form with existing data
+                                            document.getElementById('editPostTitle').value = postData.title || '';
+                                            document.getElementById('editPostDescription').value = postData.description || '';
+                                            document.getElementById('editTitleCount').textContent = postData.title ? postData.title.length : 0;
+                                            document.getElementById('editDescCount').textContent = postData.description ? postData.description.length : 0;
+
+                                            // Show current image if exists
+                                            if (postData.image) {
+                                                const currentImg = document.getElementById('currentImg');
+                                                currentImg.src = '/' + postData.image.replace(/\\/g, '/'); // ✅ Converts backslashes to forward slashes
+
+                                                document.getElementById('currentImagePreview').classList.add('active');
+                                            } else {
+                                                document.getElementById('currentImagePreview').classList.remove('active');
+                                            }
+
+                                            // Reset new image preview
+                                            document.getElementById('editImagePreview').classList.remove('active');
+                                            document.getElementById('editPostImage').value = '';
+
+                                            // Show modal
+                                            document.getElementById('editPostModal').classList.add('active');
+                                        }
+
+                                        function closeEditModal() {
+                                            editPostId = null;
+                                            removeCurrentImageFlag = false; // ✅ Reset flag
+                                            document.getElementById('editPostModal').classList.remove('active');
+                                            document.getElementById('editPostForm').reset();
+                                            document.getElementById('editImagePreview').classList.remove('active');
+                                            document.getElementById('currentImagePreview').classList.remove('active');
+                                            document.getElementById('editTitleCount').textContent = '0';
+                                            document.getElementById('editDescCount').textContent = '0';
+                                        }
+
+                                        // ✅ Function to remove current image
+                                        function removeCurrentImageFunc() {
+                                            removeCurrentImageFlag = true;
+                                            document.getElementById('currentImagePreview').classList.remove('active');
+                                            document.getElementById('currentImg').src = '';
+                                            alert('Current image will be removed when you save');
+                                        }
+
+                                        // Edit File Upload Handling
+                                        const editFileUpload = document.getElementById('editFileUpload');
+                                        const editFileInput = document.getElementById('editPostImage');
+                                        const editImagePreview = document.getElementById('editImagePreview');
+                                        const editPreviewImg = document.getElementById('editPreviewImg');
+                                        const editPreviewName = document.getElementById('editPreviewName');
+
+                                        if (editFileUpload) {
+                                            editFileUpload.addEventListener('click', () => {
+                                                editFileInput.click();
+                                            });
+
+                                            editFileUpload.addEventListener('dragover', (e) => {
+                                                e.preventDefault();
+                                                editFileUpload.classList.add('active');
+                                            });
+
+                                            editFileUpload.addEventListener('dragleave', () => {
+                                                editFileUpload.classList.remove('active');
+                                            });
+
+                                            editFileUpload.addEventListener('drop', (e) => {
+                                                e.preventDefault();
+                                                editFileUpload.classList.remove('active');
+                                                const files = e.dataTransfer.files;
+                                                if (files.length > 0) {
+                                                    editFileInput.files = files;
+                                                    handleEditImageUpload();
+                                                }
+                                            });
+                                        }
+
+                                        if (editFileInput) {
+                                            editFileInput.addEventListener('change', handleEditImageUpload);
+                                        }
+
+                                        function handleEditImageUpload() {
+                                            const file = editFileInput.files[0];
+
+                                            if (file) {
+                                                if (file.size > 5 * 1024 * 1024) {
+                                                    alert('File size must be less than 5MB');
+                                                    editFileInput.value = '';
+                                                    editImagePreview.classList.remove('active');
+                                                    return;
+                                                }
+
+                                                const reader = new FileReader();
+                                                reader.onload = (e) => {
+                                                    editPreviewImg.src = e.target.result;
+                                                    editPreviewName.textContent = '📁 ' + file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
+                                                    editImagePreview.classList.add('active');
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }
+
+                                        function removeEditImage() {
+                                            editFileInput.value = '';
+                                            editPreviewImg.src = '';
+                                            editPreviewName.textContent = '';
+                                            editImagePreview.classList.remove('active');
+                                        }
+
+                                        // Edit Character Counters
+                                        const editTitleInput = document.getElementById('editPostTitle');
+                                        const editDescInput = document.getElementById('editPostDescription');
+
+                                        if (editTitleInput) {
+                                            editTitleInput.addEventListener('input', () => {
+                                                document.getElementById('editTitleCount').textContent = editTitleInput.value.length;
+                                            });
+                                        }
+
+                                        if (editDescInput) {
+                                            editDescInput.addEventListener('input', () => {
+                                                document.getElementById('editDescCount').textContent = editDescInput.value.length;
+                                            });
+                                        }
+
+                                        // Preview Edit Post
+                                        function previewEditPost() {
+                                            const title = document.getElementById('editPostTitle').value.trim();
+                                            const description = document.getElementById('editPostDescription').value.trim();
+
+                                            if (!title || !description) {
+                                                alert('Please fill in title and description to preview');
+                                                return;
+                                            }
+
+                                            alert('Preview:\n\n' + title + '\n\n' + description);
+                                        }
+
+                                        // Close modal when clicking outside
+                                        window.onclick = function (event) {
+                                            const editModal = document.getElementById('editPostModal');
+                                            if (event.target === editModal) {
+                                                closeEditModal();
+                                            }
+                                        }
+
+                                        // ✅ Form Submission - Updated with removeImage flag
+                                        if (document.getElementById('editPostForm')) {
+                                            document.getElementById('editPostForm').addEventListener('submit', function (e) {
+                                                const title = document.getElementById('editPostTitle').value.trim();
+                                                const description = document.getElementById('editPostDescription').value.trim();
+
+                                                if (!title || !description) {
+                                                    e.preventDefault();
+                                                    alert('Please fill in all required fields');
+                                                    return;
+                                                }
+
+                                                // ✅ Set the removeImage flag before submission
+                                                document.getElementById('removeImageInput').value = removeCurrentImageFlag ? 'true' : 'false';
+                                            });
+                                        }
+
+
+                                        // Delete Post Functions
+                                        let deletePostId = null;
+
+                                        function confirmDelete(postId, postTitle) {
+                                            deletePostId = postId;
+                                            document.getElementById('deletePostTitle').textContent = postTitle;
+                                            document.getElementById('deleteConfirm').classList.add('active');
+                                        }
+
+                                        function cancelDelete() {
+                                            deletePostId = null;
+                                            document.getElementById('deleteConfirm').classList.remove('active');
+                                        }
+
+                                        function deletePost() {
+                                            if (deletePostId) {
+                                                // Create form and submit
+                                                const form = document.createElement('form');
+                                                form.method = 'POST';
+                                                form.action = `/api/posts/${deletePostId}?_method=DELETE`;
+
+                                                document.body.appendChild(form);
+                                                form.submit();
+                                            }
+                                        }
+
+                                        // Create Post Modal Functions
+                                        function openCreateModal() {
+                                            document.getElementById('createPostModal').classList.add('active');
+                                        }
+
+                                        function closeCreateModal() {
+                                            document.getElementById('createPostModal').classList.remove('active');
+                                            document.getElementById('createPostForm').reset();
+                                            document.getElementById('imagePreview').classList.remove('active');
+                                            document.getElementById('titleCount').textContent = '0';
+                                            document.getElementById('descCount').textContent = '0';
+                                        }
+
+                                        // File upload handling
+                                        const fileUpload = document.getElementById('fileUpload');
+                                        const fileInput = document.getElementById('postImage');
+                                        const imagePreview = document.getElementById('imagePreview');
+                                        const previewImg = document.getElementById('previewImg');
+                                        const previewName = document.getElementById('previewName');
+
+                                        // Click to upload
+                                        if (fileUpload) {
+                                            fileUpload.addEventListener('click', () => {
+                                                fileInput.click();
+                                            });
+
+                                            // Drag and drop
+                                            fileUpload.addEventListener('dragover', (e) => {
+                                                e.preventDefault();
+                                                fileUpload.classList.add('active');
+                                            });
+
+                                            fileUpload.addEventListener('dragleave', () => {
+                                                fileUpload.classList.remove('active');
+                                            });
+
+                                            fileUpload.addEventListener('drop', (e) => {
+                                                e.preventDefault();
+                                                fileUpload.classList.remove('active');
+
+                                                const files = e.dataTransfer.files;
+                                                if (files.length > 0) {
+                                                    fileInput.files = files;
+                                                    handleImageUpload();
+                                                }
+                                            });
+                                        }
+
+                                        // File input change
+                                        if (fileInput) {
+                                            fileInput.addEventListener('change', handleImageUpload);
+                                        }
+
+                                        function handleImageUpload() {
+                                            const file = fileInput.files[0];
+
+                                            if (file) {
+                                                // Check file size (5MB)
+                                                if (file.size > 5 * 1024 * 1024) {
+                                                    alert('File size must be less than 5MB');
+                                                    fileInput.value = '';
+                                                    imagePreview.classList.remove('active');
+                                                    return;
+                                                }
+
+                                                // Show preview
+                                                const reader = new FileReader();
+                                                reader.onload = (e) => {
+                                                    previewImg.src = e.target.result;
+                                                    previewName.textContent = '📁 ' + file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
+                                                    imagePreview.classList.add('active');
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }
+
+                                        function removeImage() {
+                                            fileInput.value = '';
+                                            previewImg.src = '';
+                                            previewName.textContent = '';
+                                            imagePreview.classList.remove('active');
+                                        }
+
+                                        // Character counters
+                                        const titleInput = document.getElementById('postTitle');
+                                        const descInput = document.getElementById('postDescription');
+
+                                        if (titleInput) {
+                                            titleInput.addEventListener('input', () => {
+                                                document.getElementById('titleCount').textContent = titleInput.value.length;
+                                            });
+                                        }
+
+                                        if (descInput) {
+                                            descInput.addEventListener('input', () => {
+                                                document.getElementById('descCount').textContent = descInput.value.length;
+                                            });
+                                        }
+
+                                        // Preview Post Function
+                                        function previewPost() {
+                                            const title = document.getElementById('postTitle').value.trim();
+                                            const description = document.getElementById('postDescription').value.trim();
+
+                                            if (!title || !description) {
+                                                alert('Please fill in title and description to preview');
+                                                return;
+                                            }
+
+                                            // You can add preview modal logic here if needed
+                                            alert('Preview: ' + title + '\n\n' + description);
+                                        }
+
+                                        // Close modal when clicking outside
+                                        window.onclick = function (event) {
+                                            const deleteDialog = document.getElementById('deleteConfirm');
+                                            if (event.target === deleteDialog) {
+                                                cancelDelete();
+                                            }
+                                        }
+
+                                        // Form submission validation
+                                        if (document.getElementById('createPostForm')) {
+                                            document.getElementById('createPostForm').addEventListener('submit', function (e) {
+                                                const title = document.getElementById('postTitle').value.trim();
+                                                const description = document.getElementById('postDescription').value.trim();
+
+                                                if (!title || !description) {
+                                                    e.preventDefault();
+                                                    alert('Please fill in all required fields');
+                                                }
+                                            });
+                                        }
+                                    </script>
 </body>
 
 </html>

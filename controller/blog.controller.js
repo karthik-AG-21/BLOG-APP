@@ -1,27 +1,54 @@
 import { Post } from "../models/blog.model.js";
 
 // Create a new post
+// export const createPost = async (req, res) => {
+//   try {
+//     const { title, description } = req.body;
+//     const image = req.file ? req.file.path : null;
+
+//     if (!title || !description || !image) {
+//        const posts = await Post.find({ userId: req.user._id });
+//       return res.render("pages/myPosts", { error: "All fields are required", success: false, posts });
+//     }
+
+//     const post = await Post.create({
+//       title,
+//       description,
+//       image,
+//       userId: req.user._id, // attach the logged-in user's ID
+//     });
+
+//      const posts = await Post.find({ userId: req.user._id });
+
+//     res.render("pages/myPosts", { success: "post created successfully", error: null, posts });
+//   } catch (err) {
+//     const posts = await Post.find({ userId: req.user._id });
+//     res.render("pages/myPosts", { success: false, error: err.message, posts });
+//   }
+// };
+
 export const createPost = async (req, res) => {
   try {
     const { title, description } = req.body;
     const image = req.file ? req.file.path : null;
 
     if (!title || !description || !image) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.redirect("/myPosts?error=All fields are required");
     }
 
-    const post = await Post.create({
+    await Post.create({
       title,
       description,
       image,
-      userId: req.user._id, // attach the logged-in user's ID
+      userId: req.user._id,
     });
 
-    res.status(201).json({ success: true, post });
+    res.redirect("/myPosts?success=Post created successfully");
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    res.redirect("/myPosts?error=" + encodeURIComponent(err.message));
   }
 };
+
 
 // Get all posts
 export const getAllPosts = async (req, res) => {
@@ -83,38 +110,38 @@ export const getPostById = async (req, res) => {
 };
 
 // Update a post (only by owner)  
+// 
+
 export const updatePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: "Post not found" });
+    if (!post) {
+      return res.redirect("/myPosts?error=Post not found");
+    }
 
     // Check if logged-in user is the owner
     if (post.userId.toString() !== req.user._id.toString()) {
-
-
-
-      return res.status(403).json({ message: "Not authorized" });
+      return res.redirect("/myPosts?error=Not authorized");
     }
 
     const { title, description } = req.body;
+    if (!title || !description) {
+      return res.redirect("/myPosts?error=All fields are required");
+    }
+
     if (title) post.title = title;
     if (description) post.description = description;
 
-
     if (req.file) {
-      post.image = `uploads/${req.file.filename}`;  // assuming multer saves in uploads
+      post.image = req.file.path;
     }
 
     await post.save();
-    res.json({ success: true, post });
+    res.redirect("/myPosts?success=Post updated successfully");
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message
-    });
+    res.redirect("/myPosts?error=" + encodeURIComponent(err.message));
   }
 };
-
 
 
 // update a post by admin (any post)
@@ -150,20 +177,48 @@ export const updatePostByAdmin = async (req, res) => {
 export const deletePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: "Post not found" });
+    
+    // Check if post exists
+    if (!post) {
+      const posts = await Post.find({ userId: req.user._id }).sort({ createdAt: -1 });
+      return res.render("pages/myPosts", { 
+        error: "Post not found", 
+        success: null, 
+        posts 
+      });
+    }
 
     // Check if logged-in user is the owner
     if (post.userId.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "Not authorized" });
+      const posts = await Post.find({ userId: req.user._id }).sort({ createdAt: -1 });
+      return res.render("pages/myPosts", { 
+        error: "Not authorized to delete this post", 
+        success: null, 
+        posts 
+      });
     }
 
-    await post.deleteOne();
-    res.json({ success: true, message: "Post deleted successfully" });
+    // Delete the post
+    await Post.findByIdAndDelete(req.params.id);
+    
+    // Fetch updated posts list
+    const posts = await Post.find({ userId: req.user._id }).sort({ createdAt: -1 });
+    
+    res.render("pages/myPosts", { 
+      success: "Post deleted successfully", 
+      error: null, 
+      posts 
+    });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error("Delete post error:", err);
+    const posts = await Post.find({ userId: req.user._id }).sort({ createdAt: -1 });
+    res.render("pages/myPosts", { 
+      success: null,
+      error: "Failed to delete post: " + err.message, 
+      posts 
+    });
   }
 };
-
 
 
 // Delete a post by admin (any post)
