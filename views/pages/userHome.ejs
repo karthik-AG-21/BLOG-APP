@@ -109,6 +109,7 @@
         .auth-buttons {
             display: flex;
             gap: 1rem;
+            align-items: center;
         }
 
         .btn {
@@ -120,6 +121,8 @@
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .btn::before {
@@ -151,10 +154,22 @@
             box-shadow: 0 8px 30px rgba(245, 87, 108, 0.6);
         }
 
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+        }
+
         @keyframes moveBackground {
             0% {
                 transform: translate(0, 0);
             }
+
             100% {
                 transform: translate(50px, 50px);
             }
@@ -178,9 +193,12 @@
         }
 
         @keyframes float {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0px);
             }
+
             50% {
                 transform: translateY(-20px);
             }
@@ -206,6 +224,7 @@
                 opacity: 0;
                 transform: translateY(-30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -224,9 +243,12 @@
         }
 
         @keyframes glow {
-            0%, 100% {
+
+            0%,
+            100% {
                 filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
             }
+
             50% {
                 filter: drop-shadow(0 0 40px rgba(240, 147, 251, 0.8));
             }
@@ -313,6 +335,7 @@
             0% {
                 transform: translateX(-100%) translateY(-100%) rotate(45deg);
             }
+
             100% {
                 transform: translateX(100%) translateY(100%) rotate(45deg);
             }
@@ -430,6 +453,7 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -455,6 +479,7 @@
                 transform: translateY(50px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -625,32 +650,6 @@
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
         }
 
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            .posts-grid {
-                grid-template-columns: 1fr;
-            }
-            .nav-links {
-                display: none;
-            }
-            .modal-content {
-                height: 95vh;
-                max-width: 100%;
-                border-radius: 15px;
-            }
-            .modal-header {
-                height: 250px;
-            }
-            .modal-body {
-                padding: 1.5rem;
-            }
-            .modal-title {
-                font-size: 1.8rem;
-            }
-        }
-
         .fade-message {
             position: fixed;
             top: 20px;
@@ -674,12 +673,47 @@
         }
 
         @keyframes fadeOut {
-            0%, 80% {
+
+            0%,
+            80% {
                 opacity: 1;
             }
+
             100% {
                 opacity: 0;
                 display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .modal-content {
+                height: 95vh;
+                max-width: 100%;
+                border-radius: 15px;
+            }
+
+            .modal-header {
+                height: 250px;
+            }
+
+            .modal-body {
+                padding: 1.5rem;
+            }
+
+            .modal-title {
+                font-size: 1.8rem;
             }
         }
     </style>
@@ -696,7 +730,10 @@
                 <a href="#">About</a>
             </div>
             <div class="auth-buttons">
-                <button class="btn btn-register">Logout</button>
+                <% if (user) { %>
+                    <span style="color: white;">Welcome, <%= user.name %></span>
+                    <a href="/api/user/logout" class="btn btn-register">Logout</a>
+                    <% } %>
             </div>
         </div>
     </nav>
@@ -705,178 +742,189 @@
         <div class="alert alert-danger fade-message">
             <%= error %>
         </div>
-    <% } %>
+        <% } %>
 
-    <% if (success) { %>
-        <div class="alert alert-success fade-message">
-            <%= success %>
-        </div>
-    <% } %>
+            <% if (success) { %>
+                <div class="alert alert-success fade-message">
+                    <%= success %>
+                </div>
+                <% } %>
 
-    <!-- Hero Section -->
-    <div class="container">
-        <div class="hero">
-            <h1>Welcome to BlogShare</h1>
-            <p>Discover amazing content from our community</p>
-        </div>
-
-        <!-- Posts Grid -->
-        <div class="posts-grid">
-            <% posts.forEach(function(post) { %>
-                <div class="post-card" onclick="openPostModal(event, this)">
-                    <div class="post-image">
-                        <% if (post.image) { %>
-                            <img src="/<%= post.image.replace(/\\/g, '/') %>" alt="<%= post.title %>" />
-                        <% } else { %>
-                            <div style="width:100%; height:100%; background:linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:3rem;">
-                                <%= post.title.charAt(0).toUpperCase() %>
-                            </div>
-                        <% } %>
-                    </div>
-
-                    <div class="post-content">
-                        <div class="post-author">
-                            <div class="avatar">
-                                <%= post.userId && post.userId.name ? post.userId.name.charAt(0).toUpperCase() : "U" %>
-                            </div>
-                            <div class="author-info">
-                                <h4><%= post.userId && post.userId.name ? post.userId.name : "Unknown User" %></h4>
-                                <span><%= post.createdAt ? new Date(post.createdAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "Just now" %></span>
-                            </div>
+                    <!-- Hero Section -->
+                    <div class="container">
+                        <div class="hero">
+                            <h1>Welcome to BlogShare</h1>
+                            <p>Discover amazing content from our community</p>
                         </div>
 
-                        <h3 class="post-title"><%= post.title %></h3>
-                        <p class="post-excerpt"><%= post.description %></p>
+                        <!-- Posts Grid -->
+                        <div class="posts-grid">
+                            <% posts.forEach(function(post) { %>
+                                <div class="post-card" onclick="openPostModal(event, this)">
+                                    <div class="post-image">
+                                        <% if (post.image) { %>
+                                            <img src="/<%= post.image.replace(/\\/g, '/') %>" alt="<%= post.title %>" />
+                                            <% } else { %>
+                                                <div
+                                                    style="width:100%; height:100%; background:linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); display:flex; align-items:center; justify-content:center; color:white; font-size:3rem;">
+                                                    <%= post.title.charAt(0).toUpperCase() %>
+                                                </div>
+                                                <% } %>
+                                    </div>
 
-                        <div class="post-footer">
-                            <div class="post-stats">
-                                <span>❤️ <%= post.likes || 0 %></span>
-                                <span>💬 <%= post.comments || 0 %></span>
+                                    <div class="post-content">
+                                        <div class="post-author">
+                                            <div class="avatar">
+                                                <%= post.userId && post.userId.name ?
+                                                    post.userId.name.charAt(0).toUpperCase() : "U" %>
+                                            </div>
+                                            <div class="author-info">
+                                                <h4>
+                                                    <%= post.userId && post.userId.name ? post.userId.name
+                                                        : "Unknown User" %>
+                                                </h4>
+                                                <span>
+                                                    <%= post.createdAt ? new
+                                                        Date(post.createdAt).toLocaleString("en-IN", {
+                                                        dateStyle: "medium" , timeStyle: "short" }) : "Just now" %>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <h3 class="post-title">
+                                            <%= post.title %>
+                                        </h3>
+                                        <p class="post-excerpt">
+                                            <%= post.description %>
+                                        </p>
+
+                                        <div class="post-footer">
+                                            <div class="post-stats">
+                                                <span>❤️ <%= post.likes || 0 %></span>
+                                                <span>💬 <%= post.comments || 0 %></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Hidden data attributes -->
+                                    <div style="display: none;">
+                                        <span class="post-data" data-title="<%= post.title %>"></span>
+                                        <span class="post-data" data-description="<%= post.description %>"></span>
+                                        <span class="post-data"
+                                            data-author="<%= post.userId && post.userId.name ? post.userId.name : 'Unknown User' %>"></span>
+                                        <span class="post-data"
+                                            data-date="<%= post.createdAt ? new Date(post.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : 'Just now' %>"></span>
+                                        <span class="post-data" data-likes="<%= post.likes || 0 %>"></span>
+                                        <span class="post-data" data-comments="<%= post.comments || 0 %>"></span>
+                                        <span class="post-data"
+                                            data-image="<%= post.image ? post.image.replace(/\\/g, '/') : '' %>"></span>
+                                        <span class="post-data"
+                                            data-firstchar="<%= post.title.charAt(0).toUpperCase() %>"></span>
+                                    </div>
+                                </div>
+                                <% }); %>
+                        </div>
+                    </div>
+
+                    <!-- Post Detail Modal -->
+                    <div class="modal" id="postModal">
+                        <div class="modal-content">
+                            <button class="close-btn" onclick="closeModal('postModal')">✕</button>
+
+                            <div class="modal-header" id="modalHeader"></div>
+
+                            <div class="modal-body">
+                                <div class="modal-author">
+                                    <div class="modal-avatar" id="modalAvatar">U</div>
+                                    <div class="modal-author-info">
+                                        <h3 id="modalAuthor">Author</h3>
+                                        <span id="modalDate">Date</span>
+                                    </div>
+                                </div>
+
+                                <h2 class="modal-title" id="modalTitle">Post Title</h2>
+                                <p class="modal-description" id="modalDescription">Description</p>
+
+                                <div class="modal-stats">
+                                    <span>❤️ <span id="modalLikes">0</span> Likes</span>
+                                    <span>💬 <span id="modalComments">0</span> Comments</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Hidden data attributes -->
-                    <div style="display: none;">
-                        <span class="post-data" data-title="<%= post.title %>"></span>
-                        <span class="post-data" data-description="<%= post.description %>"></span>
-                        <span class="post-data" data-author="<%= post.userId && post.userId.name ? post.userId.name : 'Unknown User' %>"></span>
-                        <span class="post-data" data-date="<%= post.createdAt ? new Date(post.createdAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : 'Just now' %>"></span>
-                        <span class="post-data" data-likes="<%= post.likes || 0 %>"></span>
-                        <span class="post-data" data-comments="<%= post.comments || 0 %>"></span>
-                        <span class="post-data" data-image="<%= post.image ? post.image.replace(/\\/g, '/') : '' %>"></span>
-                        <span class="post-data" data-firstchar="<%= post.title.charAt(0).toUpperCase() %>"></span>
-                    </div>
-                </div>
-            <% }); %>
-        </div>
-    </div>
+                    <!-- Footer -->
+                    <footer>
+                        <p>&copy; 2025 BlogShare. All rights reserved. | <a href="#">Privacy Policy</a></p>
+                    </footer>
 
-    <!-- Post Detail Modal -->
-    <div class="modal" id="postModal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal('postModal')">✕</button>
-            
-            <div class="modal-header" id="modalHeader">
-            </div>
+                    <script>
+                        function openPostModal(event, cardElement) {
+                            event.preventDefault();
+                            event.stopPropagation();
 
-            <div class="modal-body">
-                <div class="modal-author">
-                    <div class="modal-avatar" id="modalAvatar">U</div>
-                    <div class="modal-author-info">
-                        <h3 id="modalAuthor">Author</h3>
-                        <span id="modalDate">Date</span>
-                    </div>
-                </div>
+                            const dataSpans = cardElement.querySelectorAll('.post-data');
+                            const data = {};
+                            dataSpans.forEach(span => {
+                                Object.keys(span.dataset).forEach(key => {
+                                    data[key] = span.dataset[key];
+                                });
+                            });
 
-                <h2 class="modal-title" id="modalTitle">Post Title</h2>
-                <p class="modal-description" id="modalDescription">Description</p>
+                            const { title, description, author, date, likes, comments, image, firstchar } = data;
 
-                <div class="modal-stats">
-                    <span>❤️ <span id="modalLikes">0</span> Likes</span>
-                    <span>💬 <span id="modalComments">0</span> Comments</span>
-                </div>
-            </div>
-        </div>
-    </div>
+                            const header = document.getElementById("modalHeader");
+                            header.innerHTML = '';
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 BlogShare. All rights reserved. | <a href="#">Privacy Policy</a></p>
-    </footer>
+                            if (image && image.trim() !== '') {
+                                const img = document.createElement('img');
+                                img.src = '/' + image;
+                                img.alt = title;
+                                img.style.width = '100%';
+                                img.style.height = '100%';
+                                img.style.objectFit = 'cover';
 
-    <script>
-        function openPostModal(event, cardElement) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            // Get data from hidden data attributes
-            const dataSpans = cardElement.querySelectorAll('.post-data');
-            const data = {};
-            dataSpans.forEach(span => {
-                Object.keys(span.dataset).forEach(key => {
-                    data[key] = span.dataset[key];
-                });
-            });
+                                img.onerror = function () {
+                                    header.textContent = firstchar;
+                                    header.style.fontSize = '5rem';
+                                    header.style.display = 'flex';
+                                    header.style.alignItems = 'center';
+                                    header.style.justifyContent = 'center';
+                                };
 
-            const { title, description, author, date, likes, comments, image, firstchar } = data;
+                                header.appendChild(img);
+                            } else {
+                                header.textContent = firstchar;
+                                header.style.fontSize = '5rem';
+                                header.style.display = 'flex';
+                                header.style.alignItems = 'center';
+                                header.style.justifyContent = 'center';
+                            }
 
-            // Set modal header image
-            const header = document.getElementById("modalHeader");
-            header.innerHTML = '';
+                            document.getElementById('modalTitle').textContent = title;
+                            document.getElementById('modalDescription').textContent = description;
+                            document.getElementById('modalAuthor').textContent = author;
+                            document.getElementById('modalDate').textContent = date;
+                            document.getElementById('modalLikes').textContent = likes;
+                            document.getElementById('modalComments').textContent = comments;
+                            document.getElementById('modalAvatar').textContent = author.charAt(0).toUpperCase();
 
-            if (image && image.trim() !== '') {
-                const img = document.createElement('img');
-                img.src = '/' + image;
-                img.alt = title;
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
-                
-                img.onerror = function() {
-                    header.textContent = firstchar;
-                    header.style.fontSize = '5rem';
-                    header.style.display = 'flex';
-                    header.style.alignItems = 'center';
-                    header.style.justifyContent = 'center';
-                };
-                
-                header.appendChild(img);
-            } else {
-                header.textContent = firstchar;
-                header.style.fontSize = '5rem';
-                header.style.display = 'flex';
-                header.style.alignItems = 'center';
-                header.style.justifyContent = 'center';
-            }
+                            const modal = document.getElementById('postModal');
+                            modal.classList.add('active');
+                        }
 
-            // Set modal content
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalDescription').textContent = description;
-            document.getElementById('modalAuthor').textContent = author;
-            document.getElementById('modalDate').textContent = date;
-            document.getElementById('modalLikes').textContent = likes;
-            document.getElementById('modalComments').textContent = comments;
-            document.getElementById('modalAvatar').textContent = author.charAt(0).toUpperCase();
+                        function closeModal(modalId) {
+                            const modal = document.getElementById(modalId);
+                            modal.classList.remove('active');
+                        }
 
-            // Show modal
-            const modal = document.getElementById('postModal');
-            modal.classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.classList.remove('active');
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const postModal = document.getElementById('postModal');
-            if (event.target === postModal) {
-                closeModal('postModal');
-            }
-        }
-    </script>
+                        window.onclick = function (event) {
+                            const postModal = document.getElementById('postModal');
+                            if (event.target === postModal) {
+                                closeModal('postModal');
+                            }
+                        }
+                    </script>
 </body>
 
 </html>

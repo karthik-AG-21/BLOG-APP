@@ -99,19 +99,41 @@ export const login = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
-            maxAge: 24 * 60 * 60 * 1000, // 1 day
+            maxAge: 5 * 60 * 1000,
+
         });
 
-        const redirectUrl = user.role === 'admin' ? '/admin/dashboard' : '/otpVarify';
+        const redirect = !user.isAccountVerified ? '/otpVarify' : user.role === 'admin' ? '/adminDashboard' : '/userHome';
         res.render('pages/login', {
             error: null,
             success: 'Login successful! Redirecting...',
-            redirectUrl
+            redirect
         });
 
     } catch (err) {
         console.log("Something went wrong", err);
         return res.status(500).json({ success: false, message: "Something went wrong while logging in" });
+    }
+};
+
+
+export const logout = async (req, res) => {
+    try {
+        // Clear JWT token cookie
+        res.clearCookie("token"); // Remove the JWT token
+        
+        return res.render('pages/login', {
+            error: null,
+            success: 'Logout successful! You have been logged out.',
+            redirect: true,
+        });
+
+    } catch (err) {
+        console.error("Logout error", err);
+        return res.render("pages/login", {
+            error: "Something went wrong while logging out. Please try again.",
+            success: null
+        });
     }
 };
 

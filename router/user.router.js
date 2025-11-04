@@ -1,6 +1,6 @@
 import express from "express";
 
-import { login, register } from "../controller/user.controller.js";
+import { login, logout, register } from "../controller/user.controller.js";
 import { addComment, deleteComment, getCommentsForPost,  updateComment } from "../controller/comments.controller.js";
 import { countLikes, toggleLike } from "../controller/like.controller.js";
 import isAuthenticated from "../middleware/isAuthenticated.js";
@@ -12,7 +12,7 @@ router.post("/register", register );
 router.post("/login", login );
 
 router.get("/redirect", isAuthenticated, (req, res) => {
-  if (req.user.role === "admin") {
+  if (req.user.role === "admin") {               
     return res.redirect("/api/admin/dashboard");
   } 
 
@@ -24,6 +24,8 @@ router.get("/home", isAuthenticated, (req, res) => {
   res.send("Welcome Home User");
 });
 
+// Logout route
+router.get("/logout", isAuthenticated, logout);
 
 // routes/commentRoutes.js
 

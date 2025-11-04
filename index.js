@@ -104,7 +104,7 @@ app.get("/otpVarify", async (req, res) => {
       otpSentMessage: false,
       error: null,
       success: null,
-      
+
     });
 
   } catch (err) {
@@ -119,7 +119,7 @@ app.get("/otpVarify", async (req, res) => {
       otpSentMessage: false,
       error: err.message || "something went wrong",
       success: false,
-      
+
     });
   }
 });
@@ -128,20 +128,21 @@ app.get("/userHome", async (req, res) => {
   const posts = await Post.find().populate("userId", "name email").lean();
   const post = await Post.findById(req.params.id).populate("userId", "name email").lean();
 
-  res.render("pages/userHome", { title: "User Home" , posts, post,  error: null, success: null });
+  res.render("pages/userHome", { title: "User Home", posts, post, user: req.user, error: null, success: null });
 });
 
 app.get("/myPosts", isAuthenticated, async (req, res) => {
-   const userId = req.user.id;
-   const posts = await Post.find({ userId: userId })
-         .populate("userId", "name email")
-         .sort({ createdAt: -1 });
-   res.render("pages/myPosts", { 
-     title: "My Posts", 
-     posts, 
-     error: null, 
-     success: null 
-   });
+  const userId = req.user.id;
+  const posts = await Post.find({ userId: userId })
+    .populate("userId", "name email")
+    .sort({ createdAt: -1 });
+  res.render("pages/myPosts", {
+    title: "My Posts",
+    user: req.user,
+    posts,
+    error: null,
+    success: null
+  });
 });
 
 
