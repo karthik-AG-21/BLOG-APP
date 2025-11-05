@@ -99,7 +99,7 @@ export const login = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
-            maxAge: 5 * 60 * 1000,
+            maxAge: 60 * 60 * 1000,
 
         });
 
@@ -122,11 +122,8 @@ export const logout = async (req, res) => {
         // Clear JWT token cookie
         res.clearCookie("token"); // Remove the JWT token
         
-        return res.render('pages/login', {
-            error: null,
-            success: 'Logout successful! You have been logged out.',
-            redirect: true,
-        });
+        return res.redirect("/login");
+
 
     } catch (err) {
         console.error("Logout error", err);
@@ -176,20 +173,19 @@ export const getUserById = async (req, res) => {
 
 
 export const deleteUser = async (req, res) => {
-    try {
-        const user = await User.findByIdAndDelete(req.params.id);
-        if (!user) return res.status(404).json({
-            success: false,
-            error: "User not found"
-        });
-        res.json({
-            success: true,
-            message: "User deleted successfully"
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            error: err.message
-        });
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    
+    if (!user) {
+      return res.redirect('/adminDashboard?error=User not found');
     }
+
+    // CORRECT: Use query parameter for success message
+    res.redirect('/adminDashboard?success=User deleted successfully');
+    
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    // CORRECT: Use query parameter for error message
+    res.redirect('/adminDashboard?error=Failed to delete user');
+  }
 };

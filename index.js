@@ -8,11 +8,14 @@ import postRoutes from './router/blog.router.js';
 import otpRoutes from './router/otp.router.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { Post } from './models/blog.model.js';
 import flash from 'connect-flash';
 import { TokenUser } from "./middleware/tokenEjs.js";
 import isAuthenticated from "./middleware/isAuthenticated.js";
 import methodOverride from 'method-override';
+import { Post } from './models/blog.model.js';
+import { User } from './models/user.model.js';
+import { Comment } from './models/comment.model.js';
+
 
 
 
@@ -124,11 +127,29 @@ app.get("/otpVarify", async (req, res) => {
   }
 });
 
-app.get("/userHome", async (req, res) => {
-  const posts = await Post.find().populate("userId", "name email").lean();
-  const post = await Post.findById(req.params.id).populate("userId", "name email").lean();
+app.get("/userHome", isAuthenticated, async (req, res) => {
+  try {
+    const posts = await Post.find()
+      .populate("userId", "name email")
+      .lean();
 
-  res.render("pages/userHome", { title: "User Home", posts, post, user: req.user, error: null, success: null });
+    res.render("pages/userHome", { 
+      title: "User Home", 
+      posts, 
+      user: req.user,  // Now req.user exists because of middleware
+      error: null, 
+      success: null 
+    });
+  } catch (err) {
+    console.error("Error fetching posts", err);
+    res.render("pages/userHome", {
+      title: "User Home",
+      posts: [],
+      user: req.user,
+      error: "Error loading posts",
+      success: null
+    });
+  }
 });
 
 app.get("/myPosts", isAuthenticated, async (req, res) => {
@@ -145,6 +166,50 @@ app.get("/myPosts", isAuthenticated, async (req, res) => {
   });
 });
 
+app.get("/adminDashboard", async (req, res) => {
+  try {
+    // Fetch all users from database
+    const users = await User.find().lean();
+
+    // Fetch all posts from database
+     const posts = await Post.find().populate('userId', 'name email').lean();
+
+    // Fetch all comments from database
+    const comments = await Comment.find().lean();
+
+    // Get statistics
+    const totalUsers = users.length;
+    const totalPosts = posts.length;
+    const totalComments = comments.length;
+
+    // GET SUCCESS/ERROR FROM QUERY PARAMETERS
+    const success = req.query.success || null;
+    const error = req.query.error || null;
+
+    res.render("pages/adminDashboard", {
+      error: error,
+      success: success,
+      redirect: false,
+      users: users,
+      posts: posts,
+      totalUsers: totalUsers,
+      totalPosts: totalPosts,
+      totalComments: totalComments
+    });
+  } catch (err) {
+    console.error("Error fetching admin data:", err);
+    res.render("pages/adminDashboard", {
+      error: "Failed to load dashboard data",
+      success: null,
+      redirect: false,
+      users: [],
+      posts: [],
+      totalUsers: 0,
+      totalPosts: 0,
+      totalComments: 0
+    });
+  }
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`🚀 Server running at http://localhost:${process.env.PORT}`);

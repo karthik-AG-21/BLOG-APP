@@ -148,7 +148,7 @@ export const updatePost = async (req, res) => {
 export const updatePostByAdmin = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: "Post not found" });
+    if (!post) return res.render("pages/adminDashboard", { error: "Post not found" });
 
     // Admin can update any post, no ownership check
 
@@ -161,9 +161,9 @@ export const updatePostByAdmin = async (req, res) => {
     }
 
     await post.save();
-    res.json({ success: true, post });
+   return res.redirect('/adminDashboard?success=Post updated successfully');
   } catch (err) {
-    res.status(500).json({
+    res.render("pages/adminDashboard", {
       success: false,
       error: err.message
     });
@@ -227,13 +227,13 @@ export const deletePostByAdmin = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) {
-      return res.status(404).json({ message: "Post not found" });
+     return res.redirect('/adminDashboard?error=Post not found');
     }
 
     await post.deleteOne();
-    res.json({ success: true, message: "Post deleted successfully by admin" });
+    res.redirect('/adminDashboard?success=Post deleted successfully by admin');
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    res.redirect('/adminDashboard?error=' + encodeURIComponent(err.message));
   }
 };
 

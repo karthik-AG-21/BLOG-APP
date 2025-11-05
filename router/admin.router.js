@@ -17,7 +17,7 @@ router.get("/dashboard",  isAuthenticated,  authorizeRole(["admin"]),(req, res) 
 });
 
 
-
+    
 // Get all posts
 router.get("/all", getAllPosts);
 
@@ -27,7 +27,7 @@ router.get("/:id", isAuthenticated, getPostById);
 
 
 //update  || put by id 
-router.put("/:id", isAuthenticated, upload.single("image"), updatePostByAdmin);
+router.put("/:id", isAuthenticated, authorizeRole(["admin"]), upload.single("image"), updatePostByAdmin);
 
 // Delete post  by admin  any post 
 router.delete("/:id", isAuthenticated, deletePostByAdmin);
