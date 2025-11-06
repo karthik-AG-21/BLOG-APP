@@ -4,6 +4,7 @@ import authorizeRole from "../middleware/userRoles.js";
 import { deletePostByAdmin, getAllPosts, getPostById,  updatePostByAdmin } from "../controller/blog.controller.js";
 import { upload } from "../middleware/multer.js";
 import { deleteUser, getAllUsers, getUserById, login } from "../controller/user.controller.js";
+import { deleteComment } from "../controller/comments.controller.js";
 
 
 
@@ -44,6 +45,8 @@ router.get("/user/:id", isAuthenticated, getUserById);
 
 //Delete user by id (only by admin)
 router.delete("/user/:id", isAuthenticated, deleteUser);
+
+router.delete("/comment/:id", isAuthenticated, deleteComment);
 
 
 

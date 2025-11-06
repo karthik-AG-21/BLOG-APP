@@ -1,4 +1,5 @@
 import { Post } from "../models/blog.model.js";
+import { Comment } from "../models/comment.model.js";
 
 // Create a new post
 // export const createPost = async (req, res) => {
@@ -198,6 +199,8 @@ export const deletePost = async (req, res) => {
       });
     }
 
+    await Comment.deleteMany({ post: req.params.id });
+
     // Delete the post
     await Post.findByIdAndDelete(req.params.id);
     
@@ -229,6 +232,8 @@ export const deletePostByAdmin = async (req, res) => {
     if (!post) {
      return res.redirect('/adminDashboard?error=Post not found');
     }
+
+    await Comment.deleteMany({ post: req.params.id });
 
     await post.deleteOne();
     res.redirect('/adminDashboard?success=Post deleted successfully by admin');

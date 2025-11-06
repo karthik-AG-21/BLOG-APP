@@ -423,7 +423,8 @@
                 font-size: 0.9rem;
             }
 
-            td, th {
+            td,
+            th {
                 padding: 0.5rem;
             }
 
@@ -444,6 +445,7 @@
             <li><a href="#" onclick="showSection('dashboard', event)" class="active">📈 Dashboard</a></li>
             <li><a href="#" onclick="showSection('posts', event)">📝 Posts</a></li>
             <li><a href="#" onclick="showSection('users', event)">👥 Users</a></li>
+            <li><a href="#" onclick="showSection('comments', event)">💬 Comments</a></li>
         </ul>
     </div>
 
@@ -460,17 +462,23 @@
                 <div class="stat-card users">
                     <div class="stat-icon">👥</div>
                     <div class="stat-label">Total Users</div>
-                    <div class="stat-value"><%= totalUsers || 0 %></div>
+                    <div class="stat-value">
+                        <%= totalUsers || 0 %>
+                    </div>
                 </div>
                 <div class="stat-card posts">
                     <div class="stat-icon">📝</div>
                     <div class="stat-label">Total Posts</div>
-                    <div class="stat-value"><%= totalPosts || 0 %></div>
+                    <div class="stat-value">
+                        <%= totalPosts || 0 %>
+                    </div>
                 </div>
                 <div class="stat-card comments">
                     <div class="stat-icon">💬</div>
                     <div class="stat-label">Total Comments</div>
-                    <div class="stat-value"><%= totalComments || 0 %></div>
+                    <div class="stat-value">
+                        <%= totalComments || 0 %>
+                    </div>
                 </div>
             </div>
         </div>
@@ -480,10 +488,10 @@
             <div class="content-section">
                 <div class="section-header">
                     <h2>Manage Posts</h2>
-                    
+
                 </div>
 
-                <% if (posts && posts.length > 0) { %>
+                <% if (posts && posts.length> 0) { %>
                     <table>
                         <thead>
                             <tr>
@@ -496,29 +504,38 @@
                         <tbody>
                             <% posts.forEach(function(post) { %>
                                 <tr>
-                                    <td><strong><%= post.title %></strong></td>
-                                    <td> <%= post.userId && post.userId.name ? post.userId.name : "Unknown User" %></td>
-                                    <td><%= post.createdAt ? new Date(post.createdAt).toLocaleDateString('en-IN') : 'N/A' %></td>
+                                    <td><strong>
+                                            <%= post.title %>
+                                        </strong></td>
+                                    <td>
+                                        <%= post.userId && post.userId.name ? post.userId.name : "Unknown User" %>
+                                    </td>
+                                    <td>
+                                        <%= post.createdAt ? new Date(post.createdAt).toLocaleDateString('en-IN')
+                                            : 'N/A' %>
+                                    </td>
                                     <td>
                                         <div class="action-buttons">
                                             <button class="btn btn-edit" onclick="openEditPostModal('<%= post._id %>', {
                                                 title: '<%= post.title.replace(/'/g, " \\'") %>',
                                                 description: '<%= post.description.replace(/'/g, "\\'" ) %>',
-                                                image: '<%= (post.image || '' ).replace(/\\/g, '/' ) %>'
-                                            })">✏️ Edit</button>
-                                            <button class="btn btn-danger" onclick="confirmDeletePost('<%= post._id %>', '<%= post.title %>')">🗑️ Delete</button>
+                                                    image: '<%= (post.image || '' ).replace(/\\/g, '/' ) %>'
+                                                        })">✏️ Edit</button>
+                                            <button class="btn btn-danger"
+                                                onclick="confirmDeletePost('<%= post._id %>', '<%= post.title %>')">🗑️
+                                                Delete</button>
                                         </div>
                                     </td>
                                 </tr>
-                            <% }); %>
+                                <% }); %>
                         </tbody>
                     </table>
-                <% } else { %>
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📭</div>
-                        <p>No posts found</p>
-                    </div>
-                <% } %>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <p>No posts found</p>
+                        </div>
+                        <% } %>
             </div>
         </div>
 
@@ -529,7 +546,7 @@
                     <h2>Manage Users</h2>
                 </div>
 
-                <% if (users && users.length > 0) { %>
+                <% if (users && users.length> 0) { %>
                     <table>
                         <thead>
                             <tr>
@@ -543,112 +560,191 @@
                         <tbody>
                             <% users.forEach(function(user) { %>
                                 <tr>
-                                    <td><strong><%= user.name %></strong></td>
-                                    <td><%= user.email %></td>
-                                    <td><%= user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN') : 'N/A' %></td>
-                                    <td><span class="badge badge-success"><%= user.role || 'User' %></span></td>
+                                    <td><strong>
+                                            <%= user.name %>
+                                        </strong></td>
+                                    <td>
+                                        <%= user.email %>
+                                    </td>
+                                    <td>
+                                        <%= user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN')
+                                            : 'N/A' %>
+                                    </td>
+                                    <td><span class="badge badge-success">
+                                            <%= user.role || 'User' %>
+                                        </span></td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="btn btn-danger" onclick="confirmDeleteUser('<%= user._id %>', '<%= user.name %>')">🗑️ Delete</button>
+                                            <button class="btn btn-danger"
+                                                onclick="confirmDeleteUser('<%= user._id %>', '<%= user.name %>')">🗑️
+                                                Delete</button>
                                         </div>
                                     </td>
                                 </tr>
-                            <% }); %>
+                                <% }); %>
                         </tbody>
                     </table>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <div class="empty-state-icon">👨‍🦱</div>
+                            <p>No users found</p>
+                        </div>
+                        <% } %>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="comments-section" class="section-content" style="display: none;">
+        <div class="content-section">
+            <div class="section-header">
+                <h2>Manage Comments</h2>
+            </div>
+
+            <% if (comments && comments.length> 0) { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Author</th>
+                            <th>Comment</th>
+                            <th>Post</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% comments.forEach(function(comment) { %>
+                            <tr>
+                                <td><strong>
+                                        <%= comment.author %>
+                                    </strong></td>
+                                <td>
+                                    <%= comment.text %>
+                                </td>
+                                <td>
+                                    <%= comment.post ? comment.post.title : 'N/A' %>
+                                </td>
+                                <td>
+                                    <%= comment.createdAt ? new Date(comment.createdAt).toLocaleDateString('en-IN')
+                                        : 'N/A' %>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-danger"
+                                            onclick="confirmDeleteComment('<%= comment._id %>', '<%= comment.author %>')">🗑️
+                                            Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
                 <% } else { %>
                     <div class="empty-state">
-                        <div class="empty-state-icon">👨‍🦱</div>
-                        <p>No users found</p>
+                        <div class="empty-state-icon">💬</div>
+                        <p>No comments found</p>
                     </div>
-                <% } %>
-            </div>
+                    <% } %>
         </div>
     </div>
 
     <!-- COPY THIS ENTIRE MODAL AND REPLACE YOUR EDIT MODAL -->
 
-<!-- Edit Post Modal -->
-<div class="modal" id="editPostModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>✏️ Edit Post</h2>
-            <button class="close-btn" onclick="closeEditPostModal()">✕</button>
+    <!-- Edit Post Modal -->
+    <div class="modal" id="editPostModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Edit Post</h2>
+                <button class="close-btn" onclick="closeEditPostModal()">✕</button>
+            </div>
+
+            <form id="editPostForm" enctype="multipart/form-data" method="POST" action="">
+                <input type="hidden" id="postIdInput" name="postId" value="">
+                <input type="hidden" name="_method" value="PUT">
+
+                <div class="modal-body">
+                    <!-- Title Input -->
+                    <div class="form-group">
+                        <label for="editPostTitle">
+                            <span style="color: #667eea; font-weight: 700;">📝</span>
+                            Post Title
+                            <span style="color: #f5576c; font-size: 0.9rem;">*</span>
+                        </label>
+                        <input type="text" id="editPostTitle" name="title" placeholder="Enter post title" required
+                            maxlength="30" />
+                        <small style="color: #999; display: block; margin-top: 0.3rem;">
+                            <span id="editTitleCount">0</span>/30 characters
+                        </small>
+                    </div>
+
+                    <!-- Description Input -->
+                    <div class="form-group">
+                        <label for="editPostDescription">
+                            <span style="color: #667eea; font-weight: 700;">✍️</span>
+                            Description
+                            <span style="color: #f5576c; font-size: 0.9rem;">*</span>
+                        </label>
+                        <textarea id="editPostDescription" name="description" placeholder="Write post description..."
+                            required maxlength="250"></textarea>
+                        <small style="color: #999; display: block; margin-top: 0.3rem;">
+                            <span id="editDescCount">0</span>/250 characters
+                        </small>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div class="form-group">
+                        <label for="editPostImage">
+                            <span style="color: #667eea; font-weight: 700;">🖼️</span>
+                            Post Image (Optional)
+                        </label>
+                        <div class="file-upload" id="editFileUpload"
+                            style="border: 2px dashed #667eea; border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s; background: rgba(102, 126, 234, 0.05);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📤</div>
+                            <div style="color: #666; font-weight: 500;">Click to upload or drag and drop</div>
+                            <div style="color: #999; font-size: 0.85rem; margin-top: 0.5rem;">PNG, JPG, GIF, WebP up to
+                                5MB</div>
+                            <input type="file" id="editPostImage" name="image" accept="image/*"
+                                style="display: none;" />
+                        </div>
+
+                        <!-- Current Image Display -->
+                        <div id="currentImagePreview" style="margin-top: 1.5rem; display: none;">
+                            <p style="color: #999; font-size: 0.9rem; margin-bottom: 1rem;">📁 Current Image:</p>
+                            <div style="position: relative; display: inline-block;">
+                                <img id="currentImg" src="" alt="Current"
+                                    style="width: 200px; height: 200px; object-fit: cover; border-radius: 15px; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3); border: 3px solid white;">
+                            </div>
+                        </div>
+
+                        <!-- New Image Preview -->
+                        <div id="editImagePreview"
+                            style="margin-top: 1.5rem; display: none; text-align: center; padding: 2rem; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%); border: 2px solid #667eea; border-radius: 20px;">
+                            <div style="position: relative; display: inline-block; margin-bottom: 1rem;">
+                                <img id="editPreviewImg" src="" alt="Preview"
+                                    style="width: 200px; height: 200px; object-fit: cover; border-radius: 15px; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3); border: 3px solid white;">
+                                <div
+                                    style="position: absolute; top: -10px; right: -10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); font-size: 1.2rem;">
+                                    ✓</div>
+                            </div>
+                            <div style="margin-top: 1.5rem;">
+                                <div id="editPreviewName"
+                                    style="color: #333; font-size: 1rem; font-weight: 600; word-break: break-all; padding: 0.8rem 1rem; background: white; border-radius: 12px; margin-bottom: 1rem; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+                                </div>
+                                <button type="button" onclick="removeEditImage()"
+                                    style="background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%); color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 0.9rem;">✕
+                                    Remove Image</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" onclick="closeEditPostModal()">❌ Cancel</button>
+                    <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                </div>
+            </form>
         </div>
-
-        <form id="editPostForm" enctype="multipart/form-data" method="POST" action="">
-            <input type="hidden" id="postIdInput" name="postId" value="">
-            <input type="hidden" name="_method" value="PUT">
-
-            <div class="modal-body">
-                <!-- Title Input -->
-                <div class="form-group">
-                    <label for="editPostTitle">
-                        <span style="color: #667eea; font-weight: 700;">📝</span>
-                        Post Title
-                        <span style="color: #f5576c; font-size: 0.9rem;">*</span>
-                    </label>
-                    <input type="text" id="editPostTitle" name="title" placeholder="Enter post title" required maxlength="30" />
-                    <small style="color: #999; display: block; margin-top: 0.3rem;">
-                        <span id="editTitleCount">0</span>/30 characters
-                    </small>
-                </div>
-
-                <!-- Description Input -->
-                <div class="form-group">
-                    <label for="editPostDescription">
-                        <span style="color: #667eea; font-weight: 700;">✍️</span>
-                        Description
-                        <span style="color: #f5576c; font-size: 0.9rem;">*</span>
-                    </label>
-                    <textarea id="editPostDescription" name="description" placeholder="Write post description..." required maxlength="250"></textarea>
-                    <small style="color: #999; display: block; margin-top: 0.3rem;">
-                        <span id="editDescCount">0</span>/250 characters
-                    </small>
-                </div>
-
-                <!-- Image Upload -->
-                <div class="form-group">
-                    <label for="editPostImage">
-                        <span style="color: #667eea; font-weight: 700;">🖼️</span>
-                        Post Image (Optional)
-                    </label>
-                    <div class="file-upload" id="editFileUpload" style="border: 2px dashed #667eea; border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s; background: rgba(102, 126, 234, 0.05);">
-                        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📤</div>
-                        <div style="color: #666; font-weight: 500;">Click to upload or drag and drop</div>
-                        <div style="color: #999; font-size: 0.85rem; margin-top: 0.5rem;">PNG, JPG, GIF, WebP up to 5MB</div>
-                        <input type="file" id="editPostImage" name="image" accept="image/*" style="display: none;" />
-                    </div>
-
-                    <!-- Current Image Display -->
-                    <div id="currentImagePreview" style="margin-top: 1.5rem; display: none;">
-                        <p style="color: #999; font-size: 0.9rem; margin-bottom: 1rem;">📁 Current Image:</p>
-                        <div style="position: relative; display: inline-block;">
-                            <img id="currentImg" src="" alt="Current" style="width: 200px; height: 200px; object-fit: cover; border-radius: 15px; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3); border: 3px solid white;">
-                        </div>
-                    </div>
-
-                    <!-- New Image Preview -->
-                    <div id="editImagePreview" style="margin-top: 1.5rem; display: none; text-align: center; padding: 2rem; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%); border: 2px solid #667eea; border-radius: 20px;">
-                        <div style="position: relative; display: inline-block; margin-bottom: 1rem;">
-                            <img id="editPreviewImg" src="" alt="Preview" style="width: 200px; height: 200px; object-fit: cover; border-radius: 15px; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3); border: 3px solid white;">
-                            <div style="position: absolute; top: -10px; right: -10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); font-size: 1.2rem;">✓</div>
-                        </div>
-                        <div style="margin-top: 1.5rem;">
-                            <div id="editPreviewName" style="color: #333; font-size: 1rem; font-weight: 600; word-break: break-all; padding: 0.8rem 1rem; background: white; border-radius: 12px; margin-bottom: 1rem; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);"></div>
-                            <button type="button" onclick="removeEditImage()" style="background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%); color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 0.9rem;">✕ Remove Image</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-cancel" onclick="closeEditPostModal()">❌ Cancel</button>
-                <button type="submit" class="btn btn-primary">💾 Save Changes</button>
-            </div>
-        </form>
     </div>
-</div>
 
     <!-- Delete Confirmation Modal -->
     <div class="modal" id="deleteConfirmModal">
@@ -677,152 +773,152 @@
         // Sidebar Navigation
         function showSection(section, event) {
             event.preventDefault();
-            
+
             document.querySelectorAll('.section-content').forEach(el => {
                 el.style.display = 'none';
             });
-            
+
             document.querySelectorAll('.sidebar-menu a').forEach(el => {
                 el.classList.remove('active');
             });
-            
+
             const sectionId = section + '-section';
             const sectionEl = document.getElementById(sectionId);
             if (sectionEl) {
                 sectionEl.style.display = 'block';
             }
-            
+
             const titles = {
                 'dashboard': 'Dashboard',
                 'posts': 'Manage Posts',
                 'users': 'Manage Users'
             };
             document.getElementById('page-title').textContent = titles[section] || 'Dashboard';
-            
+
             event.target.classList.add('active');
         }
 
         // Edit Post Modal Functions
         function openEditPostModal(postId, postData) {
-    editPostId = postId;
-    document.getElementById('postIdInput').value = postId;
-    document.getElementById('editPostForm').action = `/api/admin/${postId}?_method=PUT`;
-    
-    document.getElementById('editPostTitle').value = postData.title || '';
-    document.getElementById('editPostDescription').value = postData.description || '';
-    document.getElementById('editTitleCount').textContent = postData.title ? postData.title.length : 0;
-    document.getElementById('editDescCount').textContent = postData.description ? postData.description.length : 0;
+            editPostId = postId;
+            document.getElementById('postIdInput').value = postId;
+            document.getElementById('editPostForm').action = `/api/admin/${postId}?_method=PUT`;
 
-    // ✅ SHOW CURRENT IMAGE IF EXISTS
-    if (postData.image) {
-        const currentImg = document.getElementById('currentImg');
-        currentImg.src = '/' + postData.image.replace(/\\/g, '/');
-        document.getElementById('currentImagePreview').style.display = 'block';
-    } else {
-        document.getElementById('currentImagePreview').style.display = 'none';
-    }
+            document.getElementById('editPostTitle').value = postData.title || '';
+            document.getElementById('editPostDescription').value = postData.description || '';
+            document.getElementById('editTitleCount').textContent = postData.title ? postData.title.length : 0;
+            document.getElementById('editDescCount').textContent = postData.description ? postData.description.length : 0;
 
-    // ✅ RESET NEW IMAGE PREVIEW
-    document.getElementById('editImagePreview').style.display = 'none';
-    document.getElementById('editPostImage').value = '';
-    
-    document.getElementById('editPostModal').classList.add('active');
-}
+            // ✅ SHOW CURRENT IMAGE IF EXISTS
+            if (postData.image) {
+                const currentImg = document.getElementById('currentImg');
+                currentImg.src = '/' + postData.image.replace(/\\/g, '/');
+                document.getElementById('currentImagePreview').style.display = 'block';
+            } else {
+                document.getElementById('currentImagePreview').style.display = 'none';
+            }
+
+            // ✅ RESET NEW IMAGE PREVIEW
+            document.getElementById('editImagePreview').style.display = 'none';
+            document.getElementById('editPostImage').value = '';
+
+            document.getElementById('editPostModal').classList.add('active');
+        }
 
         function openEditPostModal(postId, postData) {
-    editPostId = postId;
-    document.getElementById('postIdInput').value = postId;
-    document.getElementById('editPostForm').action = `/api/admin/${postId}?_method=PUT`;
-    
-    document.getElementById('editPostTitle').value = postData.title || '';
-    document.getElementById('editPostDescription').value = postData.description || '';
-    document.getElementById('editTitleCount').textContent = postData.title ? postData.title.length : 0;
-    document.getElementById('editDescCount').textContent = postData.description ? postData.description.length : 0;
+            editPostId = postId;
+            document.getElementById('postIdInput').value = postId;
+            document.getElementById('editPostForm').action = `/api/admin/${postId}?_method=PUT`;
 
-    // Show current image if exists
-    if (postData.image) {
-        const currentImg = document.getElementById('currentImg');
-        currentImg.src = '/' + postData.image.replace(/\\/g, '/');
-        document.getElementById('currentImagePreview').style.display = 'block';
-    } else {
-        document.getElementById('currentImagePreview').style.display = 'none';
-    }
+            document.getElementById('editPostTitle').value = postData.title || '';
+            document.getElementById('editPostDescription').value = postData.description || '';
+            document.getElementById('editTitleCount').textContent = postData.title ? postData.title.length : 0;
+            document.getElementById('editDescCount').textContent = postData.description ? postData.description.length : 0;
 
-    // Reset new image preview
-    document.getElementById('editImagePreview').style.display = 'none';
-    document.getElementById('editPostImage').value = '';
-    
-    document.getElementById('editPostModal').classList.add('active');
-}
+            // Show current image if exists
+            if (postData.image) {
+                const currentImg = document.getElementById('currentImg');
+                currentImg.src = '/' + postData.image.replace(/\\/g, '/');
+                document.getElementById('currentImagePreview').style.display = 'block';
+            } else {
+                document.getElementById('currentImagePreview').style.display = 'none';
+            }
 
-// ADD THIS AFTER closeEditPostModal FUNCTION
+            // Reset new image preview
+            document.getElementById('editImagePreview').style.display = 'none';
+            document.getElementById('editPostImage').value = '';
 
-// Edit File Upload Handling
-const editFileUpload = document.getElementById('editFileUpload');
-const editFileInput = document.getElementById('editPostImage');
-const editImagePreview = document.getElementById('editImagePreview');
-const editPreviewImg = document.getElementById('editPreviewImg');
-const editPreviewName = document.getElementById('editPreviewName');
-
-if (editFileUpload) {
-    editFileUpload.addEventListener('click', () => {
-        editFileInput.click();
-    });
-
-    editFileUpload.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        editFileUpload.style.background = 'rgba(102, 126, 234, 0.2)';
-        editFileUpload.style.borderColor = '#764ba2';
-    });
-
-    editFileUpload.addEventListener('dragleave', () => {
-        editFileUpload.style.background = 'rgba(102, 126, 234, 0.05)';
-        editFileUpload.style.borderColor = '#667eea';
-    });
-
-    editFileUpload.addEventListener('drop', (e) => {
-        e.preventDefault();
-        editFileUpload.style.background = 'rgba(102, 126, 234, 0.05)';
-        editFileUpload.style.borderColor = '#667eea';
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            editFileInput.files = files;
-            handleEditImageUpload();
+            document.getElementById('editPostModal').classList.add('active');
         }
-    });
-}
 
-if (editFileInput) {
-    editFileInput.addEventListener('change', handleEditImageUpload);
-}
+        // ADD THIS AFTER closeEditPostModal FUNCTION
 
-function handleEditImageUpload() {
-    const file = editFileInput.files[0];
+        // Edit File Upload Handling
+        const editFileUpload = document.getElementById('editFileUpload');
+        const editFileInput = document.getElementById('editPostImage');
+        const editImagePreview = document.getElementById('editImagePreview');
+        const editPreviewImg = document.getElementById('editPreviewImg');
+        const editPreviewName = document.getElementById('editPreviewName');
 
-    if (file) {
-        if (file.size > 5 * 1024 * 1024) {
-            alert('File size must be less than 5MB');
+        if (editFileUpload) {
+            editFileUpload.addEventListener('click', () => {
+                editFileInput.click();
+            });
+
+            editFileUpload.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                editFileUpload.style.background = 'rgba(102, 126, 234, 0.2)';
+                editFileUpload.style.borderColor = '#764ba2';
+            });
+
+            editFileUpload.addEventListener('dragleave', () => {
+                editFileUpload.style.background = 'rgba(102, 126, 234, 0.05)';
+                editFileUpload.style.borderColor = '#667eea';
+            });
+
+            editFileUpload.addEventListener('drop', (e) => {
+                e.preventDefault();
+                editFileUpload.style.background = 'rgba(102, 126, 234, 0.05)';
+                editFileUpload.style.borderColor = '#667eea';
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    editFileInput.files = files;
+                    handleEditImageUpload();
+                }
+            });
+        }
+
+        if (editFileInput) {
+            editFileInput.addEventListener('change', handleEditImageUpload);
+        }
+
+        function handleEditImageUpload() {
+            const file = editFileInput.files[0];
+
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    editFileInput.value = '';
+                    editImagePreview.style.display = 'none';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    editPreviewImg.src = e.target.result;
+                    editPreviewName.textContent = '📁 ' + file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
+                    editImagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeEditImage() {
             editFileInput.value = '';
+            editPreviewImg.src = '';
+            editPreviewName.textContent = '';
             editImagePreview.style.display = 'none';
-            return;
         }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            editPreviewImg.src = e.target.result;
-            editPreviewName.textContent = '📁 ' + file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
-            editImagePreview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
-function removeEditImage() {
-    editFileInput.value = '';
-    editPreviewImg.src = '';
-    editPreviewName.textContent = '';
-    editImagePreview.style.display = 'none';
-}
         function closeEditPostModal() {
             editPostId = null;
             document.getElementById('editPostModal').classList.remove('active');
@@ -832,11 +928,11 @@ function removeEditImage() {
         }
 
         // Character Counters
-        document.getElementById('editPostTitle').addEventListener('input', function() {
+        document.getElementById('editPostTitle').addEventListener('input', function () {
             document.getElementById('editTitleCount').textContent = this.value.length;
         });
 
-        document.getElementById('editPostDescription').addEventListener('input', function() {
+        document.getElementById('editPostDescription').addEventListener('input', function () {
             document.getElementById('editDescCount').textContent = this.value.length;
         });
 
@@ -855,6 +951,13 @@ function removeEditImage() {
             document.getElementById('deleteConfirmModal').classList.add('active');
         }
 
+        function confirmDeleteComment(commentId, authorName) {
+            deleteType = 'comment';
+            deleteId = commentId;
+            document.getElementById('deleteMessage').innerHTML = `Are you sure you want to delete the comment by "<strong>${authorName}</strong>"? This action cannot be undone.`;
+            document.getElementById('deleteConfirmModal').classList.add('active');
+        }
+
         function closeDeleteConfirm() {
             deleteType = null;
             deleteId = null;
@@ -865,13 +968,15 @@ function removeEditImage() {
             if (deleteId) {
                 const form = document.createElement('form');
                 form.method = 'POST';
-                
+
                 if (deleteType === 'post') {
                     form.action = `/api/admin/${deleteId}?_method=DELETE`;
                 } else if (deleteType === 'user') {
                     form.action = `/api/admin/user/${deleteId}?_method=DELETE`;
+                } else if (deleteType === 'comment') {
+                    form.action = `/api/admin/comment/${deleteId}?_method=DELETE`;
                 }
-                
+
                 document.body.appendChild(form);
                 form.submit();
             }
@@ -881,7 +986,7 @@ function removeEditImage() {
         window.onclick = function (event) {
             const editModal = document.getElementById('editPostModal');
             const deleteModal = document.getElementById('deleteConfirmModal');
-            
+
             if (event.target === editModal) {
                 closeEditPostModal();
             }
@@ -891,7 +996,7 @@ function removeEditImage() {
         }
 
         // Form Validation
-        document.getElementById('editPostForm').addEventListener('submit', function(e) {
+        document.getElementById('editPostForm').addEventListener('submit', function (e) {
             const title = document.getElementById('editPostTitle').value.trim();
             const description = document.getElementById('editPostDescription').value.trim();
 

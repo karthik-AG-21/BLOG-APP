@@ -175,12 +175,13 @@ app.get("/adminDashboard", async (req, res) => {
      const posts = await Post.find().populate('userId', 'name email').lean();
 
     // Fetch all comments from database
-    const comments = await Comment.find().lean();
+    const comments = await Comment.find().populate('post');
 
     // Get statistics
     const totalUsers = users.length;
     const totalPosts = posts.length;
     const totalComments = comments.length;
+    console.log("Comments:", totalComments);
 
     // GET SUCCESS/ERROR FROM QUERY PARAMETERS
     const success = req.query.success || null;
@@ -192,6 +193,7 @@ app.get("/adminDashboard", async (req, res) => {
       redirect: false,
       users: users,
       posts: posts,
+      comments: comments,
       totalUsers: totalUsers,
       totalPosts: totalPosts,
       totalComments: totalComments
@@ -204,6 +206,7 @@ app.get("/adminDashboard", async (req, res) => {
       redirect: false,
       users: [],
       posts: [],
+      comments: [],
       totalUsers: 0,
       totalPosts: 0,
       totalComments: 0
