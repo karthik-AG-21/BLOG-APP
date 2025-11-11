@@ -12,18 +12,24 @@ export const addComment = async (req, res) => {
 
     if (!text) return res.status(400).json({ success: false, error: "Text is required" });
 
+    // Check if post exists
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ success: false, error: "Post not found" });
+    }
+
     const comment = await Comment.create({
       text,
-      userId: req.user._id, // from isAuthenticated middleware
-      post: postId
+      userId: req.user._id,
+      postId: postId
     });
 
-    // optional: push comment id into Post.comments array
     await Post.findByIdAndUpdate(postId, { $push: { comments: comment._id } });
-
-    res.json({ success: true, data: comment });
+    
+    res.redirect('/userHome');
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error(err);
+    res.redirect('/userHome');
   }
 };
 
@@ -72,17 +78,16 @@ export const updateComment = async (req, res) => {
     let comment = await Comment.findById(commentId);
     if (!comment) return res.status(404).json({ success: false, error: "Comment not found" });
 
-    if (comment.userId.toString() !== req.user._id.toString() && req.user.role !== "admin") {
-      return res.status(403).json({ success: false, error: "Not authorized" });
+    // Only admin can delete
+    if (req.user.role !== "admin") {
+      return res.redirect("/adminDashboard?error=Not authorized");
     }
 
     await Comment.findByIdAndDelete(commentId);
-    await Post.findByIdAndUpdate(comment.post, { $pull: { comments: commentId } });
 
-    res.json({ success: true, message: "Comment deleted" });
+    res.redirect('/adminDashboard');
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error(err);
+    res.redirect('/adminDashboard');
   }
 };
-
-

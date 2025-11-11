@@ -1,5 +1,5 @@
 // models/Comment.js
-import  mongoose from "mongoose";
+import mongoose from "mongoose";
 
 const commentSchema = new mongoose.Schema(
   {
@@ -13,7 +13,7 @@ const commentSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    post: {
+    postId: {  // Change from 'post' to 'postId'
       type: mongoose.Schema.Types.ObjectId,
       ref: "Post",
       required: true,
@@ -23,5 +23,3 @@ const commentSchema = new mongoose.Schema(
 );
 
 export const Comment = mongoose.model("Comment", commentSchema);
-
-

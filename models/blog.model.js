@@ -13,17 +13,27 @@ const postSchema = new mongoose.Schema(
       trim: true,
     },
     image: {
-      type: String, // store image URL or path
+      type: String,
       required: true,
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // reference to User collection
+      ref: "User",
       required: true,
     },
+    likes: {
+      type: Number,
+      default: 0
+    },
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment"
+      }
+    ]
   },
   {
-    timestamps: true, // automatically adds createdAt and updatedAt
+    timestamps: true,
   }
 );
 

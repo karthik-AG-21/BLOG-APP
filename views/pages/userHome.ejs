@@ -639,6 +639,7 @@
             z-index: 1;
         }
 
+
         footer a {
             color: white;
             font-weight: 600;
@@ -716,6 +717,150 @@
                 font-size: 1.8rem;
             }
         }
+
+        /* Like button highlight */
+        .post-stats span.liked {
+            color: #f5576c;
+        }
+
+        /* Modal action buttons */
+        .modal-actions {
+            display: flex;
+            gap: 2rem;
+            padding: 1.5rem;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: white;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #666;
+        }
+
+        .action-btn:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .action-btn.liked {
+            border-color: #f5576c;
+            color: #f5576c;
+            background: rgba(245, 87, 108, 0.1);
+        }
+
+        /* Comments section styling */
+        .comments-section {
+            margin-top: 2rem;
+        }
+
+        .comments-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .comment-input-box {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .comment-input-box input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .comment-input-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .comment-input-box button {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .comment-input-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .comment-item {
+            background: rgba(102, 126, 234, 0.05);
+            padding: 1rem;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+            animation: slideInComment 0.3s ease;
+        }
+
+        @keyframes slideInComment {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .comment-text {
+            color: #666;
+            margin-top: 0.5rem;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        .comment-time {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 0.5rem;
+        }
+
+        .no-comments {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
 
@@ -760,8 +905,8 @@
                         <!-- Posts Grid -->
                         <div class="posts-grid">
                             <% posts.forEach(function(post) { %>
-                                <div class="post-card" onclick="openPostModal(event, this)">
-                                    <div class="post-image">
+                                <div class="post-card">
+                                    <div class="post-image" onclick="openPostModal(event, this.closest('.post-card'))">
                                         <% if (post.image) { %>
                                             <img src="/<%= post.image.replace(/\\/g, '/') %>" alt="<%= post.title %>" />
                                             <% } else { %>
@@ -800,10 +945,59 @@
 
                                         <div class="post-footer">
                                             <div class="post-stats">
-                                                <span>❤️ <%= post.likes || 0 %></span>
-                                                <span>💬 <%= post.comments || 0 %></span>
+                                                <span class="like-btn" data-postid="<%= post._id %>">
+                                                    <form method="POST" action="/api/user/<%= post._id %>/like"
+                                                        style="display:inline;">
+                                                        <button type="submit"
+                                                            style="background:none; border:none; cursor:pointer; font-size:inherit;">
+                                                            <% if (userLikedPosts &&
+                                                                userLikedPosts.includes(post._id.toString())) { %>
+                                                                ❤️ <span class="like-count liked">
+                                                                    <%= post.likes || 0 %>
+                                                                </span>
+                                                                <% } else { %>
+                                                                    ❤️ <span class="like-count">
+                                                                        <%= post.likes || 0 %>
+                                                                    </span>
+                                                                    <% } %>
+                                                        </button>
+                                                    </form>
+                                                </span>
+                                                <span class="comment-btn" data-postid="<%= post._id %>"
+                                                    onclick="event.stopPropagation(); openPostModal(event, this.closest('.post-card'))">
+                                                    💬 <span class="comment-count">
+                                                        <%= post.comments ? post.comments.length : 0 %>
+                                                    </span>
+                                                </span>
                                             </div>
                                         </div>
+                                        <% if (post.comments && post.comments.length> 0) { %>
+                                            <div
+                                                style="padding: 0.5rem 1.5rem; font-size: 0.85rem; color: #666; border-top: 1px solid #eee;">
+                                                <strong>
+                                                    <%= post.comments[0].userId.name %>
+                                                </strong>: <%= post.comments[0].text.substring(0, 50) %>...
+                                            </div>
+                                            <% } %>
+
+                                                <!-- Add this after post-footer -->
+                                                <div style="display: none;">
+                                                    <span class="post-data" data-postid="<%= post._id %>"></span>
+                                                    <span class="post-data" data-title="<%= post.title %>"></span>
+                                                    <span class="post-data"
+                                                        data-description="<%= post.description %>"></span>
+                                                    <span class="post-data"
+                                                        data-author="<%= post.userId && post.userId.name ? post.userId.name : 'Unknown User' %>"></span>
+                                                    <span class="post-data"
+                                                        data-date="<%= post.createdAt ? new Date(post.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : 'Just now' %>"></span>
+                                                    <span class="post-data" data-likes="<%= post.likes || 0 %>"></span>
+                                                    <span class="post-data"
+                                                        data-comments="<%= post.comments ? post.comments.length : 0 %>"></span>
+                                                    <span class="post-data"
+                                                        data-image="<%= post.image ? post.image.replace(/\\/g, '/') : '' %>"></span>
+                                                    <span class="post-data"
+                                                        data-firstchar="<%= post.title.charAt(0).toUpperCase() %>"></span>
+                                                </div>
                                     </div>
 
                                     <!-- Hidden data attributes -->
@@ -815,7 +1009,8 @@
                                         <span class="post-data"
                                             data-date="<%= post.createdAt ? new Date(post.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : 'Just now' %>"></span>
                                         <span class="post-data" data-likes="<%= post.likes || 0 %>"></span>
-                                        <span class="post-data" data-comments="<%= post.comments || 0 %>"></span>
+                                        <span class="post-data"
+                                            data-comments="<%= JSON.stringify(post.comments) %>"></span>
                                         <span class="post-data"
                                             data-image="<%= post.image ? post.image.replace(/\\/g, '/') : '' %>"></span>
                                         <span class="post-data"
@@ -827,11 +1022,13 @@
                     </div>
 
                     <!-- Post Detail Modal -->
+                    <!-- Post Detail Modal -->
                     <div class="modal" id="postModal">
                         <div class="modal-content">
-                            <button class="close-btn" onclick="closeModal('postModal')">✕</button>
-
-                            <div class="modal-header" id="modalHeader"></div>
+                            <div class="modal-header" id="modalHeader">
+                                <!-- Image or letter will be inserted here by JS -->
+                            </div>
+                            <button class="close-btn" onclick="closeModal('postModal')">×</button>
 
                             <div class="modal-body">
                                 <div class="modal-author">
@@ -845,13 +1042,33 @@
                                 <h2 class="modal-title" id="modalTitle">Post Title</h2>
                                 <p class="modal-description" id="modalDescription">Description</p>
 
-                                <div class="modal-stats">
-                                    <span>❤️ <span id="modalLikes">0</span> Likes</span>
-                                    <span>💬 <span id="modalComments">0</span> Comments</span>
+                                <div class="modal-actions">
+                                    <button class="action-btn like-action-btn" id="likeBtn" onclick="toggleModalLike()">
+                                        ❤️ <span id="modalLikeCount">0</span> Likes
+                                    </button>
+                                    <button class="action-btn" onclick="scrollToComments()">
+                                        💬 <span id="modalCommentCount">0</span> Comments
+                                    </button>
+                                </div>
+
+                                <div class="comments-section">
+                                    <h3 class="comments-title">Comments</h3>
+                                    <div class="comment-input-box">
+                                        <form method="POST" id="commentForm"
+                                            style="display:flex; width:100%; gap:0.8rem;">
+                                            <input type="text" name="text" id="commentInput"
+                                                placeholder="Write a comment..." required style="flex:1;" />
+                                            <button type="submit">Send</button>
+                                        </form>
+                                    </div>
+                                    <div class="comments-list" id="commentsList">
+                                        <!-- Comments will be displayed here by JavaScript -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
 
                     <!-- Footer -->
                     <footer>
@@ -859,6 +1076,11 @@
                     </footer>
 
                     <script>
+
+
+
+
+
                         function openPostModal(event, cardElement) {
                             event.preventDefault();
                             event.stopPropagation();
@@ -871,7 +1093,11 @@
                                 });
                             });
 
-                            const { title, description, author, date, likes, comments, image, firstchar } = data;
+                            const { title, description, author, date, likes, comments, image, firstchar, postid } = data;
+                            currentPostId = postid;
+
+                            // Update form action
+                            document.getElementById('commentForm').action = `/api/user/${postid}/comments`;
 
                             const header = document.getElementById("modalHeader");
                             header.innerHTML = '';
@@ -880,10 +1106,6 @@
                                 const img = document.createElement('img');
                                 img.src = '/' + image;
                                 img.alt = title;
-                                img.style.width = '100%';
-                                img.style.height = '100%';
-                                img.style.objectFit = 'cover';
-
                                 img.onerror = function () {
                                     header.textContent = firstchar;
                                     header.style.fontSize = '5rem';
@@ -891,7 +1113,6 @@
                                     header.style.alignItems = 'center';
                                     header.style.justifyContent = 'center';
                                 };
-
                                 header.appendChild(img);
                             } else {
                                 header.textContent = firstchar;
@@ -905,9 +1126,35 @@
                             document.getElementById('modalDescription').textContent = description;
                             document.getElementById('modalAuthor').textContent = author;
                             document.getElementById('modalDate').textContent = date;
-                            document.getElementById('modalLikes').textContent = likes;
-                            document.getElementById('modalComments').textContent = comments;
+                            document.getElementById('modalLikeCount').textContent = likes;
+                            document.getElementById('modalCommentCount').textContent = comments ? JSON.parse(comments).length : 0;
                             document.getElementById('modalAvatar').textContent = author.charAt(0).toUpperCase();
+
+                            const likeBtn = document.getElementById('likeBtn');
+                            likeBtn.classList.remove('liked');
+
+                            // Display comments
+                            const commentsList = document.getElementById('commentsList');
+                            if (comments && comments !== '[]' && comments !== '') {
+                                try {
+                                    const commentArray = JSON.parse(comments);
+                                    if (commentArray.length > 0) {
+                                        commentsList.innerHTML = commentArray.map(comment => `
+                    <div class="comment-item">
+                        <div class="comment-author">${comment.userId.name}</div>
+                        <div class="comment-text">${comment.text}</div>
+                        <div class="comment-time">${new Date(comment.createdAt).toLocaleString()}</div>
+                    </div>
+                `).join('');
+                                    } else {
+                                        commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+                                    }
+                                } catch (e) {
+                                    commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+                                }
+                            } else {
+                                commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+                            }
 
                             const modal = document.getElementById('postModal');
                             modal.classList.add('active');
@@ -924,6 +1171,237 @@
                                 closeModal('postModal');
                             }
                         }
+
+                        // ============================================
+                        // POSTS DATA STORAGE
+                        // ============================================
+                        const postsData = {};
+
+                        function initializePostsData() {
+                            const postCards = document.querySelectorAll('.post-card');
+                            postCards.forEach(card => {
+                                const postDataSpan = card.querySelector('.post-data[data-postid]');
+                                if (postDataSpan) {
+                                    const postId = postDataSpan.dataset.postid;
+
+                                    const dataSpans = card.querySelectorAll('.post-data');
+                                    const data = {};
+                                    dataSpans.forEach(span => {
+                                        Object.keys(span.dataset).forEach(key => {
+                                            data[key] = span.dataset[key];
+                                        });
+                                    });
+
+                                    postsData[postId] = {
+                                        title: data.title,
+                                        description: data.description,
+                                        author: data.author,
+                                        date: data.date,
+                                        image: data.image,
+                                        firstchar: data.firstchar,
+                                        likes: parseInt(data.likes) || 0,
+                                        liked: false,
+                                        comments: data.comments && data.comments !== '[]' ? JSON.parse(data.comments) : []
+                                    };
+                                }
+                            });
+                        }
+
+                        let currentPostId = null;
+
+                        // ============================================
+                        // LIKE FUNCTIONALITY
+                        // ============================================
+                        function toggleLike(btn, postId) {
+                            const likeCount = btn.querySelector('.like-count');
+                            const currentCount = parseInt(likeCount.textContent);
+
+                            if (btn.classList.contains('liked')) {
+                                btn.classList.remove('liked');
+                                postsData[postId].likes = currentCount - 1;
+                                postsData[postId].liked = false;
+                                likeCount.textContent = currentCount - 1;
+                            } else {
+                                btn.classList.add('liked');
+                                postsData[postId].likes = currentCount + 1;
+                                postsData[postId].liked = true;
+                                likeCount.textContent = currentCount + 1;
+                            }
+                        }
+
+                        function toggleModalLike() {
+                            const likeBtn = document.getElementById('likeBtn');
+                            const likeCount = document.getElementById('modalLikeCount');
+                            const currentCount = parseInt(likeCount.textContent);
+
+                            if (likeBtn.classList.contains('liked')) {
+                                likeBtn.classList.remove('liked');
+                                postsData[currentPostId].likes = currentCount - 1;
+                                postsData[currentPostId].liked = false;
+                                likeCount.textContent = currentCount - 1;
+                                updatePostCardCount(currentPostId);
+                            } else {
+                                likeBtn.classList.add('liked');
+                                postsData[currentPostId].likes = currentCount + 1;
+                                postsData[currentPostId].liked = true;
+                                likeCount.textContent = currentCount + 1;
+                                updatePostCardCount(currentPostId);
+                            }
+                        }
+
+                        // ============================================
+                        // COMMENT FUNCTIONALITY
+                        // ============================================
+                        function submitComment() {
+                            const input = document.getElementById('commentInput');
+                            const commentText = input.value.trim();
+
+                            if (!commentText) {
+                                alert('Please write a comment!');
+                                return;
+                            }
+
+                            const now = new Date();
+                            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                            const comment = {
+                                author: 'You',
+                                text: commentText,
+                                time: timeString
+                            };
+
+                            postsData[currentPostId].comments.push(comment);
+                            input.value = '';
+                            renderComments();
+
+                            const commentCount = postsData[currentPostId].comments.length;
+                            document.getElementById('modalCommentCount').textContent = commentCount;
+                            updatePostCardCount(currentPostId);
+                        }
+
+                        function renderComments() {
+                            const commentsList = document.getElementById('commentsList');
+                            const comments = postsData[currentPostId].comments;
+
+                            if (comments.length === 0) {
+                                commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+                                return;
+                            }
+
+                            commentsList.innerHTML = comments.map(comment => `
+        <div class="comment-item">
+            <div class="comment-author">${comment.author}</div>
+            <div class="comment-text">${comment.text}</div>
+            <div class="comment-time">${comment.time}</div>
+        </div>
+    `).join('');
+                        }
+
+                        function updatePostCardCount(postId) {
+                            const postCards = document.querySelectorAll('.post-card');
+                            let foundCard = null;
+
+                            postCards.forEach(card => {
+                                const dataSpan = card.querySelector('.post-data[data-postid]');
+                                if (dataSpan && dataSpan.dataset.postid === postId) {
+                                    foundCard = card;
+                                }
+                            });
+
+                            if (foundCard) {
+                                const likeCountSpan = foundCard.querySelector('.like-count');
+                                const commentCountSpan = foundCard.querySelector('.comment-count');
+
+                                if (likeCountSpan) likeCountSpan.textContent = postsData[postId].likes;
+                                if (commentCountSpan) commentCountSpan.textContent = postsData[postId].comments.length;
+                            }
+                        }
+
+                        function scrollToComments() {
+                            const commentsList = document.getElementById('commentsList');
+                            commentsList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            document.getElementById('commentInput').focus();
+                        }
+
+                        // ============================================
+                        // MODIFIED MODAL FUNCTION
+                        // ============================================
+                        function openPostModal(event, cardElement) {
+                            event.preventDefault();
+                            event.stopPropagation();
+
+                            const dataSpans = cardElement.querySelectorAll('.post-data');
+                            const data = {};
+                            dataSpans.forEach(span => {
+                                Object.keys(span.dataset).forEach(key => {
+                                    data[key] = span.dataset[key];
+                                });
+                            });
+
+                            const { title, description, author, date, likes, comments, image, firstchar, postid } = data;
+                            currentPostId = postid;
+
+                            const header = document.getElementById("modalHeader");
+                            header.innerHTML = '';
+
+                            if (image && image.trim() !== '') {
+                                const img = document.createElement('img');
+                                img.src = '/' + image;
+                                img.alt = title;
+                                img.onerror = function () {
+                                    header.textContent = firstchar;
+                                    header.style.fontSize = '5rem';
+                                    header.style.display = 'flex';
+                                    header.style.alignItems = 'center';
+                                    header.style.justifyContent = 'center';
+                                };
+                                header.appendChild(img);
+                            } else {
+                                header.textContent = firstchar;
+                                header.style.fontSize = '5rem';
+                                header.style.display = 'flex';
+                                header.style.alignItems = 'center';
+                                header.style.justifyContent = 'center';
+                            }
+
+                            document.getElementById('modalTitle').textContent = title;
+                            document.getElementById('modalDescription').textContent = description;
+                            document.getElementById('modalAuthor').textContent = author;
+                            document.getElementById('modalDate').textContent = date;
+                            document.getElementById('modalLikeCount').textContent = postsData[postid].likes;
+                            document.getElementById('modalCommentCount').textContent = postsData[postid].comments.length;
+                            document.getElementById('modalAvatar').textContent = author.charAt(0).toUpperCase();
+
+                            const likeBtn = document.getElementById('likeBtn');
+                            if (postsData[postid].liked) {
+                                likeBtn.classList.add('liked');
+                            } else {
+                                likeBtn.classList.remove('liked');
+                            }
+
+                            renderComments();
+
+                            const modal = document.getElementById('postModal');
+                            modal.classList.add('active');
+                        }
+
+                        // ============================================
+                        // INITIALIZE ON PAGE LOAD
+                        // ============================================
+                        document.addEventListener('DOMContentLoaded', function () {
+                            initializePostsData();
+
+                            const commentInput = document.getElementById('commentInput');
+                            if (commentInput) {
+                                commentInput.addEventListener('keypress', function (e) {
+                                    if (e.key === 'Enter') {
+                                        submitComment();
+                                    }
+                                });
+                            }
+                        });
+
+
                     </script>
 </body>
 

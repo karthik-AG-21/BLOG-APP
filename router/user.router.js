@@ -2,7 +2,7 @@ import express from "express";
 
 import { login, logout, register } from "../controller/user.controller.js";
 import { addComment, deleteComment, getCommentsForPost,  updateComment } from "../controller/comments.controller.js";
-import { countLikes, toggleLike } from "../controller/like.controller.js";
+import {  toggleLike } from "../controller/like.controller.js";
 import isAuthenticated from "../middleware/isAuthenticated.js";
 
 const router = express.Router();
@@ -50,11 +50,14 @@ router.delete("/comments/:id", isAuthenticated, deleteComment );
 
 
 // Like a post
-router.post("/:id/like", isAuthenticated, toggleLike);
+router.post("/:id/like", isAuthenticated, (req, res, next) => {
+  console.log("Like route hit! ID:", req.params.id);
+  next();
+}, toggleLike);
 
 
 // Get like count for a post 
-router.get("/count/:id", isAuthenticated, countLikes); 
+// router.get("/count/:id", isAuthenticated, countLikes); 
 
 
 export default router;

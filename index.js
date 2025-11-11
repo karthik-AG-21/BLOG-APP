@@ -15,6 +15,8 @@ import methodOverride from 'method-override';
 import { Post } from './models/blog.model.js';
 import { User } from './models/user.model.js';
 import { Comment } from './models/comment.model.js';
+import { Like } from './models/like.model.js';
+
 
 
 
@@ -131,20 +133,40 @@ app.get("/userHome", isAuthenticated, async (req, res) => {
   try {
     const posts = await Post.find()
       .populate("userId", "name email")
+      .populate({
+        path: "comments",
+        populate: { path: "userId", select: "name email" }
+      })
       .lean();
 
-    res.render("pages/userHome", { 
-      title: "User Home", 
-      posts, 
-      user: req.user,  // Now req.user exists because of middleware
-      error: null, 
-      success: null 
+      // console.log("Posts with comments:", JSON.stringify(posts, null, 2)); // Debugging line
+
+    // Add likes count
+    for (let post of posts) {
+      const likeCount = await Like.countDocuments({ postId: post._id });
+      post.likes = likeCount;
+    }
+
+    let userLikedPosts = [];
+    if (req.user) {
+      const likedData = await Like.find({ userId: req.user._id });
+      userLikedPosts = likedData.map(l => l.postId.toString());
+    }
+
+    res.render("pages/userHome", {
+      title: "User Home",
+      posts,
+      userLikedPosts,
+      user: req.user,
+      error: req.query.error || null,
+      success: req.query.success || null
     });
   } catch (err) {
     console.error("Error fetching posts", err);
     res.render("pages/userHome", {
       title: "User Home",
       posts: [],
+      userLikedPosts: [],
       user: req.user,
       error: "Error loading posts",
       success: null
@@ -172,10 +194,10 @@ app.get("/adminDashboard", async (req, res) => {
     const users = await User.find().lean();
 
     // Fetch all posts from database
-     const posts = await Post.find().populate('userId', 'name email').lean();
+    const posts = await Post.find().populate('userId', 'name email').lean();
 
     // Fetch all comments from database
-    const comments = await Comment.find().populate('post');
+    const comments = await Comment.find().populate('postId');
 
     // Get statistics
     const totalUsers = users.length;
