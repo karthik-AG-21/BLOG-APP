@@ -61,7 +61,7 @@ export const sendVerifyOtp = async (req, res) => {
     await transporter.sendMail(mailOptions);
 
 
-    const posts = await Post.find().populate('userId').sort({ createdAt: -1 });
+    const posts = await Post.find().populate('userId').sort({ createdAt: -1 }).maxTimeMS(5000);
 
     // Render EJS with OTP modal active and posts
     return res.render('pages/otpVarify', {
@@ -97,7 +97,7 @@ export const verifyOtp = async (req, res) => {
       return res.render('pages/otpVarify', { error: "OTP is required", success: false });
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).maxTimeMS(5000);
     if (!user) {
       return res.render('pages/otpVarify', { error: "User not found", success: false });
     }
