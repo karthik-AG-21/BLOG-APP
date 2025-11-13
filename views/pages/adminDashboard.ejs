@@ -143,6 +143,7 @@
 
         /* Table Container */
         .content-section {
+           
             background: white;
             border-radius: 15px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
@@ -539,114 +540,97 @@
             </div>
         </div>
 
-        <!-- Users Management Section -->
-        <div id="users-section" class="section-content" style="display: none;">
-            <div class="content-section">
-                <div class="section-header">
-                    <h2>Manage Users</h2>
-                </div>
-
-                <% if (users && users.length> 0) { %>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Joined</th>
-                                <th>Role</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% users.forEach(function(user) { %>
-                                <tr>
-                                    <td><strong>
-                                            <%= user.name %>
-                                        </strong></td>
-                                    <td>
-                                        <%= user.email %>
-                                    </td>
-                                    <td>
-                                        <%= user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN')
-                                            : 'N/A' %>
-                                    </td>
-                                    <td><span class="badge badge-success">
-                                            <%= user.role || 'User' %>
-                                        </span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-danger"
-                                                onclick="confirmDeleteUser('<%= user._id %>', '<%= user.name %>')">🗑️
-                                                Delete</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <% }); %>
-                        </tbody>
-                    </table>
-                    <% } else { %>
-                        <div class="empty-state">
-                            <div class="empty-state-icon">👨‍🦱</div>
-                            <p>No users found</p>
-                        </div>
-                        <% } %>
-            </div>
+       <!-- Users Management Section -->
+<div id="users-section" class="section-content" style="display: none;">
+    <div class="content-section">
+        <div class="section-header">
+            <h2>Manage Users</h2>
         </div>
-    </div>
 
-
-    <div id="comments-section" class="section-content" style="display: none;">
-        <div class="content-section">
-            <div class="section-header">
-                <h2>Manage Comments</h2>
-            </div>
-
-            <% if (comments && comments.length> 0) { %>
-                <table>
-                    <thead>
+        <% if (users && users.length > 0) { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Joined</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(function(user) { %>
                         <tr>
-                            <th>Author</th>
-                            <th>Comment</th>
-                            <th>Post</th>
-                            <th>Date</th>
-                            <th>Actions</th>
+                            <td><strong><%= user.name %></strong></td>
+                            <td><%= user.email %></td>
+                            <td>
+                                <%= user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN') : 'N/A' %>
+                            </td>
+                            <td><span class="badge badge-success"><%= user.role || 'User' %></span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-danger"
+                                        onclick="confirmDeleteUser('<%= user._id %>', '<%= user.name %>')">🗑️ Delete</button>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <% comments.forEach(function(comment) { %>
-                            <tr>
-                                <td><strong>
-                                        <%= comment.author %>
-                                    </strong></td>
-                                <td>
-                                    <%= comment.text %>
-                                </td>
-                                <td>
-                                    <%= comment.post ? comment.post.title : 'N/A' %>
-                                </td>
-                                <td>
-                                    <%= comment.createdAt ? new Date(comment.createdAt).toLocaleDateString('en-IN')
-                                        : 'N/A' %>
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-danger"
-                                            onclick="confirmDeleteComment('<%= comment._id %>', '<%= comment.author %>')">🗑️
-                                            Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <% }); %>
-                    </tbody>
-                </table>
-                <% } else { %>
-                    <div class="empty-state">
-                        <div class="empty-state-icon">💬</div>
-                        <p>No comments found</p>
-                    </div>
-                    <% } %>
-        </div>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <div class="empty-state">
+                <div class="empty-state-icon">👨‍🦱</div>
+                <p>No users found</p>
+            </div>
+        <% } %>
     </div>
+</div>
+
+<!-- Comments Management Section -->
+<div id="comments-section" class="section-content" style="display: none;">
+    <div class="content-section">
+        <div class="section-header">
+            <h2>Manage Comments</h2>
+        </div>
+
+        <% if (comments && comments.length > 0) { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Author</th>
+                        <th>Comment</th>
+                        <th>Post</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% comments.forEach(function(comment) { %>
+                        <tr>
+                            <td><strong><%= comment.userId.name %></strong></td>
+                            <td><%= comment.content || comment.text || 'N/A' %></td>
+                            <td><%= comment.postId ? comment.postId.title : 'N/A' %></td>
+                            <td>
+                                <%= comment.createdAt ? new Date(comment.createdAt).toLocaleDateString('en-IN') : 'N/A' %>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-danger"
+                                        onclick="confirmDeleteComment('<%= comment._id %>', '<%= comment.author %>')">🗑️ Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <div class="empty-state">
+                <div class="empty-state-icon">💬</div>
+                <p>No comments found</p>
+            </div>
+        <% } %>
+    </div>
+</div>
 
     <!-- COPY THIS ENTIRE MODAL AND REPLACE YOUR EDIT MODAL -->
 

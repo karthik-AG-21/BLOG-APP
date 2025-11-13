@@ -136,10 +136,9 @@ app.get("/userHome", isAuthenticated, async (req, res) => {
       .populate({
         path: "comments",
         populate: { path: "userId", select: "name email" }
-      })
-      .lean();
+      });
 
-      // console.log("Posts with comments:", JSON.stringify(posts, null, 2)); // Debugging line
+      console.log("Posts with comments:", JSON.stringify(posts, null, 2)); // Debugging line
 
     // Add likes count
     for (let post of posts) {
@@ -197,7 +196,7 @@ app.get("/adminDashboard", async (req, res) => {
     const posts = await Post.find().populate('userId', 'name email').lean();
 
     // Fetch all comments from database
-    const comments = await Comment.find().populate('postId');
+    const comments = await Comment.find().populate('postId', 'title').populate('userId', 'name email').lean();
 
     // Get statistics
     const totalUsers = users.length;

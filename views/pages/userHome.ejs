@@ -992,7 +992,7 @@
                                                         data-date="<%= post.createdAt ? new Date(post.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : 'Just now' %>"></span>
                                                     <span class="post-data" data-likes="<%= post.likes || 0 %>"></span>
                                                     <span class="post-data"
-                                                        data-comments="<%= post.comments ? post.comments.length : 0 %>"></span>
+                                                        data-comments="<%= JSON.stringify(post.comments) %>"></span>
                                                     <span class="post-data"
                                                         data-image="<%= post.image ? post.image.replace(/\\/g, '/') : '' %>"></span>
                                                     <span class="post-data"
@@ -1140,12 +1140,12 @@
                                     const commentArray = JSON.parse(comments);
                                     if (commentArray.length > 0) {
                                         commentsList.innerHTML = commentArray.map(comment => `
-                    <div class="comment-item">
-                        <div class="comment-author">${comment.userId.name}</div>
-                        <div class="comment-text">${comment.text}</div>
-                        <div class="comment-time">${new Date(comment.createdAt).toLocaleString()}</div>
-                    </div>
-                `).join('');
+    <div class="comment-item">
+        <div class="comment-author">${comment.userId && comment.userId.name ? comment.userId.name : 'Unknown User'}</div>
+        <div class="comment-text">${comment.text}</div>
+        <div class="comment-time">${new Date(comment.createdAt).toLocaleString()}</div>
+    </div>
+`).join('');
                                     } else {
                                         commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
                                     }
@@ -1252,32 +1252,7 @@
                         // ============================================
                         // COMMENT FUNCTIONALITY
                         // ============================================
-                        function submitComment() {
-                            const input = document.getElementById('commentInput');
-                            const commentText = input.value.trim();
 
-                            if (!commentText) {
-                                alert('Please write a comment!');
-                                return;
-                            }
-
-                            const now = new Date();
-                            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-
-                            const comment = {
-                                author: 'You',
-                                text: commentText,
-                                time: timeString
-                            };
-
-                            postsData[currentPostId].comments.push(comment);
-                            input.value = '';
-                            renderComments();
-
-                            const commentCount = postsData[currentPostId].comments.length;
-                            document.getElementById('modalCommentCount').textContent = commentCount;
-                            updatePostCardCount(currentPostId);
-                        }
 
                         function renderComments() {
                             const commentsList = document.getElementById('commentsList');
@@ -1290,9 +1265,9 @@
 
                             commentsList.innerHTML = comments.map(comment => `
         <div class="comment-item">
-            <div class="comment-author">${comment.author}</div>
+            <div class="comment-author">${comment.userId && comment.userId.name ? comment.userId.name : 'Unknown User'}</div>
             <div class="comment-text">${comment.text}</div>
-            <div class="comment-time">${comment.time}</div>
+            <div class="comment-time">${new Date(comment.createdAt).toLocaleString()}</div>
         </div>
     `).join('');
                         }
@@ -1340,6 +1315,8 @@
 
                             const { title, description, author, date, likes, comments, image, firstchar, postid } = data;
                             currentPostId = postid;
+
+                            document.getElementById('commentForm').action = `/api/user/${postid}/comments`;
 
                             const header = document.getElementById("modalHeader");
                             header.innerHTML = '';
@@ -1391,14 +1368,7 @@
                         document.addEventListener('DOMContentLoaded', function () {
                             initializePostsData();
 
-                            const commentInput = document.getElementById('commentInput');
-                            if (commentInput) {
-                                commentInput.addEventListener('keypress', function (e) {
-                                    if (e.key === 'Enter') {
-                                        submitComment();
-                                    }
-                                });
-                            }
+
                         });
 
 
