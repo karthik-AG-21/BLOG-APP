@@ -838,7 +838,7 @@
                             <div class="post-footer">
                                 <div class="post-stats">
                                     <span>❤️ <%= post.likes || 0 %></span>
-                                    <span>💬 <%= post.comments || 0 %></span>
+                                    <span>💬 <%= post.comments ? post.comments.length : 0 %></span>
                                 </div>
                             </div>
                         </div>

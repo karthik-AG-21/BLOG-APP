@@ -1,7 +1,7 @@
 import express from "express";
 
 import { login, logout, register } from "../controller/user.controller.js";
-import { addComment, deleteComment, getCommentsForPost,  updateComment } from "../controller/comments.controller.js";
+import { addComment, deleteComment, deleteCommentUser, getCommentsForPost,  updateComment } from "../controller/comments.controller.js";
 import {  toggleLike } from "../controller/like.controller.js";
 import isAuthenticated from "../middleware/isAuthenticated.js";
 
@@ -59,5 +59,9 @@ router.post("/:id/like", isAuthenticated, (req, res, next) => {
 // Get like count for a post 
 // router.get("/count/:id", isAuthenticated, countLikes); 
 
+
+router.post("/comment/:id", isAuthenticated, updateComment);
+
+router.post('/comment/:id/delete', isAuthenticated, deleteCommentUser);
 
 export default router;

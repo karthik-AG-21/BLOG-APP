@@ -55,22 +55,25 @@ export const updateComment = async (req, res) => {
     const commentId = req.params.id;
 
     let comment = await Comment.findById(commentId);
-    if (!comment) return res.status(404).json({ success: false, error: "Comment not found" });
+    if (!comment) {
+      return res.status(404).redirect('/userHome'); // or res.send with error
+    }
 
     if (comment.userId.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ success: false, error: "Not authorized" });
+      return res.status(403).redirect('/userHome'); // or res.send with error
     }
 
     comment.text = text || comment.text;
     await comment.save();
 
-    res.json({ success: true, data: comment });
+    // Redirect back to the page
+    res.redirect('/userHome');
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    res.status(500).redirect('/userHome');
   }
 };
 
-// DELETE a comment (only by author or admin)
+// DELETE a comment (admin)
  export const deleteComment = async (req, res) => {
   try {
     const commentId = req.params.id;
@@ -89,5 +92,28 @@ export const updateComment = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.redirect('/adminDashboard');
+  }
+};
+
+export const deleteCommentUser = async (req, res) => {
+  try {
+    const commentId = req.params.id;
+
+    let comment = await Comment.findById(commentId);
+    if (!comment) {
+      return res.redirect('/userHome'); // or your home route
+    }
+
+    // Check if user is the comment author
+    if (comment.userId.toString() !== req.user._id.toString()) {
+      return res.status(403).redirect('/userHome');
+    }
+
+    // Delete the comment
+    await Comment.findByIdAndDelete(commentId);
+
+    res.redirect('/userHome'); // Redirect to home page
+  } catch (err) {
+    res.status(500).redirect('/userHome');
   }
 };

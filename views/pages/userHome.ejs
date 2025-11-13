@@ -54,6 +54,95 @@
             z-index: 1;
         }
 
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .comment-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #888;
+            font-size: 0.75rem;
+            transition: all 0.3s;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .comment-action-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
+
+        .comment-action-form {
+            display: inline;
+        }
+
+        .comment-action-btn-submit {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #888;
+            font-size: 0.75rem;
+            transition: all 0.3s;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        .comment-action-btn-submit:hover {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
+
+        .edit-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .edit-form input {
+            flex: 1;
+            padding: 0.5rem 0.8rem;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .edit-form button {
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .edit-form button:hover {
+            background: #764ba2;
+        }
+
+        .edit-form button.cancel-btn {
+            background: #999;
+        }
+
+        .edit-form button.cancel-btn:hover {
+            background: #777;
+        }
+
         .logo {
             font-size: 1.8rem;
             font-weight: bold;
@@ -606,12 +695,7 @@
             line-height: 1.3;
         }
 
-        .modal-description {
-            font-size: 1rem;
-            color: #666;
-            line-height: 1.8;
-            margin-bottom: 2rem;
-        }
+
 
         .modal-stats {
             display: flex;
@@ -776,6 +860,19 @@
             margin-bottom: 2rem;
         }
 
+        .post-excerpt {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            position: relative;
+        }
+
+
+
         .comment-input-box input {
             flex: 1;
             padding: 0.8rem 1rem;
@@ -792,6 +889,16 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
+        .post-excerpt {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
         .comment-input-box button {
             padding: 0.8rem 1.5rem;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -801,6 +908,14 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
+        }
+
+        .modal-description {
+            max-height: none;
+            overflow-y: visible;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin-bottom: 2rem;
         }
 
         .comment-input-box button:hover {
@@ -882,6 +997,7 @@
             </div>
         </div>
     </nav>
+    <input type="hidden" id="currentUserId" value="<%= user._id %>" />
 
     <% if (error) { %>
         <div class="alert alert-danger fade-message">
@@ -940,9 +1056,14 @@
                                             <%= post.title %>
                                         </h3>
                                         <p class="post-excerpt">
-                                            <%= post.description %>
+                                            <%= post.description.length> 100 ? post.description.substring(0, 100) +
+                                                '...' : post.description %>
+                                                <% if (post.description.length> 100) { %>
+                                                    <a href="#"
+                                                        onclick="openPostModal(event, this.closest('.post-card')); return false;"
+                                                        style="color: #667eea; font-weight: 600; text-decoration: none;">more</a>
+                                                    <% } %>
                                         </p>
-
                                         <div class="post-footer">
                                             <div class="post-stats">
                                                 <span class="like-btn" data-postid="<%= post._id %>">
@@ -1040,8 +1161,8 @@
                                 </div>
 
                                 <h2 class="modal-title" id="modalTitle">Post Title</h2>
-                                <p class="modal-description" id="modalDescription">Description</p>
-
+                                <p class="modal-description" id="modalDescription"
+                                    style="white-space: pre-wrap; word-break: break-word;">Description</p>
                                 <div class="modal-actions">
                                     <button class="action-btn like-action-btn" id="likeBtn" onclick="toggleModalLike()">
                                         ❤️ <span id="modalLikeCount">0</span> Likes
@@ -1263,14 +1384,60 @@
                                 return;
                             }
 
-                            commentsList.innerHTML = comments.map(comment => `
-        <div class="comment-item">
-            <div class="comment-author">${comment.userId && comment.userId.name ? comment.userId.name : 'Unknown User'}</div>
-            <div class="comment-text">${comment.text}</div>
-            <div class="comment-time">${new Date(comment.createdAt).toLocaleString()}</div>
+                            commentsList.innerHTML = comments.map(comment => {
+                                const isOwnComment = comment.userId._id === currentUserId;
+                                return `
+        <div class="comment-item" data-comment-id="${comment._id}">
+            <div class="comment-header">
+                <div>
+                    <div class="comment-author">${comment.userId.name || 'Unknown User'}</div>
+                    <div class="comment-time">${new Date(comment.createdAt).toLocaleString()}</div>
+                </div>
+                ${isOwnComment ? `
+                    <div class="comment-actions">
+                        <button class="comment-action-btn" onclick="toggleEditForm('${comment._id}')">✏️</button>
+                        <form method="POST" action="/api/user/comment/${comment._id}/delete" class="comment-action-form" style="display:inline;" onsubmit="setTimeout(() => location.reload(), 500);">
+    <button type="submit" class="comment-action-btn-submit" onclick="return confirm('Delete this comment?')">🗑️</button>
+</form>
+                    </div>
+                ` : ''}
+            </div>
+            <div class="comment-text" id="text-${comment._id}" style="white-space: pre-wrap; word-break: break-word;">${comment.text}</div>
+            <div class="edit-form" id="edit-${comment._id}" style="display:none;">
+                <form method="POST" action="/api/user/comment/${comment._id}" style="display:flex; gap:0.5rem; width:100%;">
+                    <input type="text" name="text" id="input-${comment._id}" value="${comment.text}" required />
+                    <button type="submit">Save</button>
+                    <button type="button" class="cancel-btn" onclick="toggleEditForm('${comment._id}')">Cancel</button>
+                </form>
+            </div>
         </div>
-    `).join('');
+    `}).join('');
                         }
+
+
+                        function toggleEditForm(commentId) {
+                            const textDiv = document.getElementById(`text-${commentId}`);
+                            const editForm = document.getElementById(`edit-${commentId}`);
+
+                            if (editForm.style.display === 'none') {
+                                textDiv.style.display = 'none';
+                                editForm.style.display = 'flex';
+                                document.getElementById(`input-${commentId}`).focus();
+                            } else {
+                                textDiv.style.display = 'block';
+                                editForm.style.display = 'none';
+                            }
+                        }
+
+                        document.addEventListener('DOMContentLoaded', function () {
+                            initializePostsData();
+
+                            // Get current user ID from hidden input or data attribute
+                            const userIdElement = document.getElementById('currentUserId');
+                            if (userIdElement) {
+                                currentUserId = userIdElement.value;
+                            }
+                        });
 
                         function updatePostCardCount(postId) {
                             const postCards = document.querySelectorAll('.post-card');
