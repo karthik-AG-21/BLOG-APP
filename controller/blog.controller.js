@@ -31,25 +31,55 @@ import { Comment } from "../models/comment.model.js";
 export const createPost = async (req, res) => {
   try {
     const { title, description } = req.body;
-    const image = req.file ? req.file.path : null;
+    const image = req.file?.path;
 
-    if (!title || !description || !image) {
-      return res.redirect("/myPosts?error=All fields are required");
+    // Validation
+    if (!title?.trim() || !description?.trim() || !image) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'All fields (title, description, image) are required' 
+      });
     }
 
-    await Post.create({
-      title,
-      description,
+    // Check title and description length
+    if (title.length > 200 || description.length > 5000) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Title or description too long' 
+      });
+    }
+
+    // Verify user is authenticated
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'User not authenticated' 
+      });
+    }
+
+    const post = await Post.create({
+      title: title.trim(),
+      description: description.trim(),
       image,
       userId: req.user._id,
     });
 
-    res.redirect("/myPosts?success=Post created successfully");
+    res.status(201).json({
+      success: true,
+      message: 'Post created successfully',
+      data: post
+    });
+
   } catch (err) {
-    res.redirect("/myPosts?error=" + encodeURIComponent(err.message));
+    console.error('Create post error:', err);
+    
+    res.status(500).json({
+      success: false,
+      message: 'Error creating post. Please try again.',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 };
-
 
 // Get all posts
 export const getAllPosts = async (req, res) => {
